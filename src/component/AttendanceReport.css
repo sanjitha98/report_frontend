@@ -1,0 +1,70 @@
+.attendance-container {
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+  background-color: #f4f4f9;
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.export-btn {
+  padding: 6px 12px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  border: 1px solid #ccc;
+}
+
+.attendance-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.attendance-table th, .attendance-table td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 12px;
+}
+
+.status.s { color: blue;font-weight: bold; }
+.status.so { color: rgb(240, 10, 240); font-weight: bold;} /* Saturday Off */
+.status.lop { color: red; font-weight: bold;}
+.status.pe { color: orange;font-weight: bold; }
+.status.p { color: rgb(2, 83, 32); 
+font-weight: bold;}
+.status.c { color: rgb(247, 115, 7);font-weight: bold; }
+.status.wfh {color: rgb(8, 101, 240);font-weight: bold;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

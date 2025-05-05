@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import loginReducer from "../Redux/slice/loginSlice";
 import commonReducer from "../Redux/slice/commonSlice";
-import { persistReducer } from "redux-persist";
+import { persistReducer,persistStore  } from "redux-persist";
 import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 
@@ -11,11 +11,14 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  login: persistReducer(persistConfig, loginReducer),
-  common: persistReducer(persistConfig, commonReducer),
+  login: loginReducer,
+  common: commonReducer,
 });
 
-export default configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
 });
+
+export const persistor = persistStore(store);

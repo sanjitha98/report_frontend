@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const commonSlice = createSlice({
   name: "common",
   initialState: {
-    isModelOpen: false, //default value
+    isModelOpen: false, //default value87
+    hasModalShownToday: false,
   },
   reducers: {
     openModel: (state, action) => {
@@ -13,10 +14,13 @@ export const commonSlice = createSlice({
     closeModel: (state, action) => {
       state.isModelOpen = false;
     },
+    setHasModalShownToday: (state, action) => {
+      state.hasModalShownToday = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { closeModel, openModel } = commonSlice.actions;
+export const { closeModel, openModel,setHasModalShownToday  } = commonSlice.actions;
 
 export default commonSlice.reducer;

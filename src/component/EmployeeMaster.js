@@ -8,7 +8,11 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { closeModel, openModel } from "../Redux/slice/commonSlice";
+import {
+  closeModel,
+  openModel,
+  setHasModalShownToday,
+} from "../Redux/slice/commonSlice";
 
 // Register Chart.js components for v3+
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -511,10 +515,14 @@ const EmployeeMaster = () => {
   const [todayEvents, setTodayEvents] = useState([]);
   const dispatch = useDispatch();
   const { isAuth, userData } = useSelector((state) => state.login);
-  const { isModelOpen } = useSelector((state) => state.common);
+  const { isModelOpen, hasModalShownToday } = useSelector(
+    (state) => state.common
+  );
+
   // Function to close modal
   const closeModelFun = () => {
     dispatch(closeModel());
+    dispatch(setHasModalShownToday(true));
   };
 
   // States for uploading employee data
@@ -789,8 +797,6 @@ const EmployeeMaster = () => {
   //     fetchAttendanceData();
   //   }, [employeeList]);
 
-  
-
   // const [leaveData, setLeaveData] = useState([]); // Store leave details
 
   // const fetchAttendanceData = async () => {
@@ -820,7 +826,6 @@ const EmployeeMaster = () => {
   //     setPresentEmployeeCount(todayPunchedEmployeeCount);
   //     console.log("Punched Employee IDs:", punchedEmployeeIds); // Debug
   //   console.log("Present Employees:", todayPunchedEmployeeCount); // Debug
-
 
   //     let appliedAbsentEmployeesCount = 0;
   //     let leaveDetails = [];
@@ -869,7 +874,7 @@ const EmployeeMaster = () => {
 
   //         console.log("Processed Leave Data:", leaveDetails); // Debug log
   //         console.log("Leave Details:", leaveDetails); // Debug
-  //         // const appliedAbsentEmployeesCount = 2; 
+  //         // const appliedAbsentEmployeesCount = 2;
   //         appliedAbsentEmployeesCount = enrichedLeaves.filter((leave) => {
 
   //           if (leave.leaveTypes === "Permission") {
@@ -933,24 +938,23 @@ const EmployeeMaster = () => {
   //   console.log("Updated Leave Data:", leaveData);
   // }, [leaveData]);
 
-
   const [leaveData, setLeaveData] = useState([]); // Store leave details
 
   const fetchAttendanceData = async () => {
     try {
       const todayDate = moment().format("YYYY-MM-DD");
-      
+
       // Get all today punched employees
       const punchResponse = await axios.post(
         `${process.env.REACT_APP_API_URL}/dailypunch`,
         { date: todayDate }
       );
-  
+
       console.log("Punch Response:", punchResponse.data); // Debug log
-  
+
       let todayPunchedEmployeeCount = 0;
       let punchedEmployeeIds = new Set();
-  
+
       if (punchResponse?.data?.length > 0) {
         punchedEmployeeIds = new Set(
           punchResponse.data
@@ -959,30 +963,30 @@ const EmployeeMaster = () => {
         );
         todayPunchedEmployeeCount = punchedEmployeeIds.size;
       }
-  
+
       setPresentEmployeeCount(todayPunchedEmployeeCount);
       console.log("Punched Employee IDs:", punchedEmployeeIds); // Debug
       console.log("Present Employees:", todayPunchedEmployeeCount); // Debug
-  
+
       let appliedAbsentEmployeesCount = 0;
       let leaveDetails = [];
-  
+
       try {
         // Get all applied leaves based on today
         const leaveResponse = await axios.post(
           `${process.env.REACT_APP_API_URL}/getLeaveRequestsAll`,
           { startDate: todayDate, endDate: todayDate }
         );
-  
+
         console.log("Leave Response:", leaveResponse.data); // Debug log
-  
+
         if (leaveResponse.data && leaveResponse.data.status === "Success") {
           const leaves = leaveResponse.data.data;
-  
+
           if (!leaves || leaves.length === 0) {
             console.warn("No leave data found");
           }
-  
+
           const enrichedLeaves = await Promise.all(
             leaves.map(async (leave) => {
               if (!leave.employeeName) {
@@ -1002,44 +1006,81 @@ const EmployeeMaster = () => {
               return leave;
             })
           );
-  
+
+          
+                    
           // Store employee name and leave type in an array
-          leaveDetails = enrichedLeaves.map((leave) => ({
+          const filteredLeaves = enrichedLeaves.filter(
+            (leave) => leave.status === "Accepted"
+          );
+
+          leaveDetails = filteredLeaves.map((leave) => ({
             employeeName: leave.employeeName,
-            leaveTypes: leave.leaveTypes || "Absent", // If no leave type, mark as "Absent"
+            leaveTypes: leave.leaveTypes || "Absent",
           }));
-  
+
           console.log("Processed Leave Data:", leaveDetails); // Debug log
           console.log("Leave Details:", leaveDetails); // Debug
-  
+
           // Calculate appliedAbsentEmployeesCount based on actual leave requests
-          appliedAbsentEmployeesCount = enrichedLeaves.filter((leave) => {
+          // appliedAbsentEmployeesCount = enrichedLeaves.filter((leave) => {
+          //   if (leave.status !== "Accepted") return false;
+          //   if (leave.leaveTypes === "Permission") {
+          //     return leave.duration && leave.duration > 2; // Ignore permission as absent
+          //   } else {
+          //     return [
+          //       "LossofPay Leave",
+          //       "Casual Leave",
+          //       "Work From Home",
+          //       "Saturday Off ",
+          //     ].includes(leave.leaveTypes);
+          //   }
+          // }).length;
+
+          appliedAbsentEmployeesCount = enrichedLeaves.reduce((count, leave) => {
+            if (leave.status !== "Accepted") return count;
+          
+            if (leave.leaveTypes === "Half Day Leave") {
+              return count + 0.5;
+            }
+          
             if (leave.leaveTypes === "Permission") {
-              return leave.duration && leave.duration > 2; // Ignore permission as absent
-            } else {
-              return [
+              return leave.duration && leave.duration > 2 ? count + 1 : count;
+            }
+          
+            if (
+              [
                 "LossofPay Leave",
                 "Casual Leave",
                 "Work From Home",
                 "Saturday Off ",
-                
-              ].includes(leave.leaveTypes);
+              ].includes(leave.leaveTypes)
+            ) {
+              return count + 1;
             }
-          }).length;
-  
-          console.log("Applied Absent Employees Count:", appliedAbsentEmployeesCount); // Debug
+          
+            return count;
+          }, 0);
+
+
+
+
+          console.log(
+            "Applied Absent Employees Count:",
+            appliedAbsentEmployeesCount
+          ); // Debug
         }
       } catch (error) {
         console.error("Error fetching leave data:", error);
       }
-  
+
       // Find employees who didn't punch in and are NOT on leave
       const absentWithoutLeave = employeeList.filter(
         (emp) =>
           !punchedEmployeeIds.has(emp.employeeId) &&
           !leaveDetails.some((leave) => leave.employeeName === emp.employeeName)
       );
-  
+
       // Add missing employees as "Absent" ONLY for the leaveDetails array
       absentWithoutLeave.forEach((emp) => {
         leaveDetails.push({
@@ -1047,21 +1088,20 @@ const EmployeeMaster = () => {
           leaveTypes: "Absent",
         });
       });
-  
+
       // Calculate totalAbsentWithoutLeaves correctly
       const totalAbsentWithoutLeaves = absentWithoutLeave.length; // Corrected line
-  
+
       const actualAbsent =
         totalAbsentWithoutLeaves + appliedAbsentEmployeesCount;
-  
+
       console.log("Actual Absent:", actualAbsent); // Log here, AFTER calculation
-  
+
       setAbsentEmployees(actualAbsent);
       setLeaveData(leaveDetails); // Store employee names & leave types
-  
+
       console.log("Employee List:", employeeList); // Debug
       console.log("Total Absent Without Leaves:", totalAbsentWithoutLeaves); // Debug
-  
     } catch (error) {
       console.error(
         "Error fetching attendance data:",
@@ -1069,17 +1109,17 @@ const EmployeeMaster = () => {
       );
     }
   };
-  
+
   useEffect(() => {
     fetchAttendanceData();
   }, [employeeList]);
-  
+
   // Add this useEffect to log leaveData changes
   useEffect(() => {
     console.log("Updated Leave Data:", leaveData);
   }, [leaveData]);
 
-// 4. FETCH PUNCH LOGS for Today
+  // 4. FETCH PUNCH LOGS for Today
   useEffect(() => {
     const fetchPunchDataToday = async () => {
       const todayDate = moment().format("YYYY-MM-DD");
@@ -1236,6 +1276,45 @@ const EmployeeMaster = () => {
     }
   }, [employeeList]);
 
+  const [holidays, setHolidays] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const formatDate = (date) => moment(date).format("DD MMM YYYY");
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/get_upcoming_holidays`
+        );
+        //       setHolidays(response.data.data);
+        //     } catch (err) {
+        //       setError("Failed to fetch holidays.");
+        //     } finally {
+        //       setLoading(false);
+        //     }
+        //   };
+        //   fetchHolidays();
+        // }, []);
+
+        const today = new Date();
+        const threeMonthsLater = new Date();
+        threeMonthsLater.setMonth(today.getMonth() + 3);
+
+        const filteredHolidays = response.data.data.filter((holiday) => {
+          const holidayDate = new Date(holiday.startDate);
+          return holidayDate >= today && holidayDate <= threeMonthsLater;
+        });
+
+        setHolidays(filteredHolidays);
+      } catch (err) {
+        setError("Failed to fetch holidays.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHolidays();
+  }, []);
+
   // 7. PIE CHART DATA
   const totalEmployees = employeeCount;
   const uniqueLateEmployees = new Set(latePunchData.map((l) => l.employeeName));
@@ -1247,8 +1326,10 @@ const EmployeeMaster = () => {
     datasets: [
       {
         data: [lateCount, onTimeCount],
-        backgroundColor: ["#ef4444", "#10b981"],
-        hoverBackgroundColor: ["#dc2626", "#059669"],
+        // backgroundColor: ["#ef4444", "#10b981"],
+        // hoverBackgroundColor: ["#dc2626", "#059669"],
+        backgroundColor: ["#9ca3af", "#3b82f6"], // gray and blue
+        hoverBackgroundColor: ["#6b7280", "#2563eb"], // darker gray and blue for hover
       },
     ],
   };
@@ -1388,7 +1469,7 @@ const EmployeeMaster = () => {
         <SideSection>
           <CalendarCard>
             <div className="calendar-header">
-              <FaCalendarAlt size={24} color="#2563eb" />
+              <FaCalendarAlt size={24} color="#3b82f6" />
               <h3>Calendar</h3>
             </div>
             <div className="calendar-date">{moment().format("MMMM YYYY")}</div>
@@ -1422,7 +1503,7 @@ const EmployeeMaster = () => {
           </CalendarCard>
 
           {/* Auto Pop-Up for Today's Events */}
-          {isModelOpen && (
+          {isModelOpen && !hasModalShownToday && (
             <div
               style={{
                 position: "fixed",
@@ -1553,9 +1634,31 @@ const EmployeeMaster = () => {
               <p>No Upcoming Events.</p>
             )}
           </UpcomingCard>
+          <div
+            className="mt-6 bg-white p-4 rounded-xl shadow-sm"
+            style={{ marginTop: "0px" }}
+          >
+            <h1 className="text-lg font-semibold text-gray-800 mb-4">
+              Upcoming Holidays
+            </h1>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {holidays.length > 0 ? (
+                holidays.map((holiday) => (
+                  <li key={holiday.id}>
+                    <span className="font-medium">{holiday.eventName}</span> —{" "}
+                    {formatDate(holiday.startDate)}
+                  </li>
+                ))
+              ) : (
+                <li className="text-sm text-gray-500">
+                  No upcoming holidays in the next 3 months.
+                </li>
+              )}
+            </ul>
+          </div>
 
           <PieChartWrapper>
-            <div style={{ width: "200px", height: "200px" }}>
+            <div style={{ width: "200px", height: "200px",marginTop: "10px"}}>
               <span>Late Punch Records</span>
               <Pie data={pieData} options={pieOptions} />
             </div>

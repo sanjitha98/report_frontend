@@ -373,7 +373,7 @@ const IdCardList = () => {
   const employeeTableHeaders = [
     "S/No",
     "Report Date",
-    "Employee Name", // Added Employee Name
+
     "Application",
     "Location",
     "Received Date",
@@ -602,9 +602,9 @@ const IdCardList = () => {
                               <td rowSpan={group.length} className="px-4 py-3">
                                 {reportDate}
                               </td>
-                              <td rowSpan={group.length} className="px-4 py-3">
+                              {userType === "Admin" &&<td rowSpan={group.length} className="px-4 py-3">
                                 {employeeName}
-                              </td>
+                              </td>}
                             </>
                           )}
 
@@ -656,7 +656,7 @@ const IdCardList = () => {
             </table>
           </div>
         ) : (
-          <div className="text-center text-gray-500">Loading...</div>
+          <div className="text-center text-gray-500">No data available</div>
         )}
       </div>
     </>

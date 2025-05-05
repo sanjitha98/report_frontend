@@ -464,8 +464,9 @@ import EmployeeStatus from "./EmployeeStatus";
 //import ProjectMasters from "./ProjectMasters";
 import ProjectList from "./ProjectList";
 import ProjectForm from "./ProjectForm";
-import { closeModel } from "../Redux/slice/commonSlice";
-
+import { closeModel, setHasModalShownToday } from "../Redux/slice/commonSlice";
+import ProjectAssignForm from "./ProjectAssignForm";
+import ProjectAssignList from "./ProjectAssignList";
 
 const EmployeeReport = React.lazy(() =>
   import(/* webpackPrefetch: true */ "./EmployeeReport")
@@ -498,8 +499,6 @@ const PunchReport = React.lazy(() =>
   import(/* webpackPrefetch: true */ "./PunchReport")
 );
 
-
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -520,6 +519,7 @@ const Dashboard = () => {
   const location = useLocation();
 
   // Add state for dropdown
+  const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [employeeDropdownOpen, setEmployeeDropdownOpen] = useState(false);
   const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
@@ -562,7 +562,8 @@ const Dashboard = () => {
 
   const logOuts = () => {
     dispatch(logOut());
-    dispatch(closeModel());
+    dispatch(setHasModalShownToday(false));
+    // dispatch(closeModel());
     navigate("/");
   };
 
@@ -942,7 +943,9 @@ const Dashboard = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() => setEmployeeDropdownOpen(!employeeDropdownOpen)}
+                    onClick={() =>
+                      setEmployeeDropdownOpen(!employeeDropdownOpen)
+                    }
                     className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
                       location.pathname.startsWith(
                         "/dashboard/employee-master"
@@ -1262,10 +1265,10 @@ M16 14v6"
                 </li>
 
                 <li>
-                  <Link
-                    to="/dashboard/projects"
-                    className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                      location.pathname === "/dashboard/projects" &&
+                  <button
+                    onClick={() => setProjectDropdownOpen(!projectDropdownOpen)}
+                    className={`flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                      location.pathname.startsWith("/dashboard/projects") &&
                       "bg-gray-100"
                     }`}
                   >
@@ -1290,59 +1293,55 @@ M16 14v6"
                     <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
                       Projects
                     </span>
-                  </Link>
+                    <svg
+                      className={`w-5 h-5 transition ${
+                        projectDropdownOpen ? "transform rotate-180" : ""
+                      }`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {projectDropdownOpen && (
+                    <ul className="ml-4">
+                      <li>
+                        <Link
+                          to="/dashboard/projects"
+                          className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                            location.pathname.includes("/dashboard/projects") &&
+                            "bg-gray-100"
+                          }`}
+                        >
+                          <span className="flex-1 text-left ml-3 whitespace-nowrap">
+                            Project List
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/dashboard/project-assign-list"
+                          className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                            location.pathname ===
+                              "/dashboard/project-assign-list" && "bg-gray-100"
+                          }`}
+                        >
+                          <span className="flex-1 text-left ml-3 whitespace-nowrap">
+                            Project Assign
+                          </span>
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
                 </li>
-              
-
-
-
-              
-              
-              
-             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                 <li>
                   <Link
@@ -1473,7 +1472,7 @@ M16 14v6"
                 </li>
                 <li>
                   <Link
-                    to="/dashboard/employeeTask"
+                    to="/dashboard/project-assign-list"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
                       location.pathname === "/dashboard/employeeTask"
                         ? "bg-gray-100"
@@ -1782,9 +1781,9 @@ M16 14v6"
             <Route path="/punchReport" element={<PunchReport />} />
             <Route path="/projects" element={<ProjectList />} />
             <Route path="/projects/add" element={<ProjectForm />} />
-            
-            </Routes>
-
+            <Route path="/project-assign" element={<ProjectAssignForm />} />
+            <Route path="/project-assign-list" element={<ProjectAssignList />} />
+          </Routes>
         </div>
       </div>
     </>

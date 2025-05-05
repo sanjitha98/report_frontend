@@ -4,10 +4,15 @@ import moment from "moment";
 import styled from "styled-components";
 import { FaCalendarAlt } from "react-icons/fa";
 import welcomeImage from "../img/logo/welcome.png";
-import {  useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import {
+  closeModel,
+  openModel,
+  setHasModalShownToday,
+} from "../Redux/slice/commonSlice";
 
 // Register Chart.js components for v3+
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -474,7 +479,7 @@ const EmployeeMaster = () => {
   const [leaveApplications, setLeaveApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const employeeId = localStorage.getItem("employeeId") || "A";
-
+  const dispatch = useDispatch();
   const [currentTime, setCurrentTime] = useState("");
   const [greeting, setGreeting] = useState("");
   const [quote, setQuote] = useState("");
@@ -492,34 +497,35 @@ const EmployeeMaster = () => {
   const [upcomingEventsWithin2Days, setUpcomingEventsWithin2Days] = useState(
     []
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isModelOpen, hasModalShownToday } = useSelector(
+    (state) => state.common
+  );
   const [todayEvents, setTodayEvents] = useState([]);
 
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Function to close modal
   const closeModal = () => {
-    setIsModalOpen(false);
+    dispatch(closeModel());
+    dispatch(setHasModalShownToday(true));
   };
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   // States for uploading employee data
   const [formData, setFormData] = useState(new FormData());
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  
+
   const navigate = useNavigate();
   const { isAuth, userData } = useSelector((state) => state.login);
 
- useEffect(() => {
+  useEffect(() => {
     if (!isAuth) {
       navigate("/");
     }
   }, [isAuth, navigate]);
-
-
-
-
 
   // 1. SET DAILY QUOTE, DATE/TIME, GREETING
   useEffect(() => {
@@ -799,9 +805,11 @@ const EmployeeMaster = () => {
         (evt) => evt.date === today
       );
 
-      if (todayEventsList.length > 0) {
-        setTodayEvents(todayEventsList);
-        setIsModalOpen(true); // Automatically show modal when today’s event exists
+      if (!isModelOpen) {
+        if (todayEventsList.length > 0) {
+          setTodayEvents(todayEventsList);
+          dispatch(openModel(true));
+        }
       }
     }
   }, [employeeList]);
@@ -950,15 +958,36 @@ const EmployeeMaster = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/get_upcoming_holidays`
         );
-        setHolidays(response.data.data);
+        //       setHolidays(response.data.data);
+        //     } catch (err) {
+        //       setError("Failed to fetch holidays.");
+        //     } finally {
+        //       setLoading(false);
+        //     }
+        //   };
+        //   fetchHolidays();
+        // }, []);
+
+        const today = new Date();
+        const threeMonthsLater = new Date();
+        threeMonthsLater.setMonth(today.getMonth() + 3);
+
+        const filteredHolidays = response.data.data.filter((holiday) => {
+          const holidayDate = new Date(holiday.startDate);
+          return holidayDate >= today && holidayDate <= threeMonthsLater;
+        });
+
+        setHolidays(filteredHolidays);
       } catch (err) {
         setError("Failed to fetch holidays.");
       } finally {
         setLoading(false);
       }
     };
+
     fetchHolidays();
   }, []);
+
   const formatDate = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleDateString("en-GB", {
@@ -1000,148 +1029,116 @@ const EmployeeMaster = () => {
             <WelcomeImage src={welcomeImage} alt="Welcome" />
           </WelcomeCard>
 
-          <div>
-            <div className="bg-white p-4 rounded-xl shadow-md">
-              <div className="text-center mb-6">
+          <div className="mt-6">
+            <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-200">
                 <h1 className="text-xl font-bold text-gray-800">
-                  Upcoming Holidays
+                  Leave Status for {moment().format("MMMM")}
                 </h1>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
-                {holidays.map((holiday) => (
-                  <div
-                    key={holiday.id}
-                    className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl p-3 shadow-sm hover:shadow-md transition duration-300"
-                  >
-                    <div className="flex flex-col items-center text-center space-y-2">
-                      {/* Date Badge */}
-                      <div className="bg-blue-100 text-blue-800 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                        {formatDate(holiday.startDate)}
-                      </div>
-
-                      {/* Event Name */}
-                      <h2 className="text-sm font-semibold text-gray-800">
-                        {holiday.eventName}
-                      </h2>
-
-                      {/* Description */}
-                      <p className="text-xs text-gray-600">
-                        {holiday.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-
-            <div className="bg-white p-4 rounded-xl shadow-md mt-6">
-            <div className="p-4">
-              <h1 className="text-xl font-bold mb-4">
-                Leave Status for {moment().format("MMMM")}
-              </h1>
-              <div className="space-y-4">
+              <div className="px-4 py-5 overflow-x-auto">
                 {filteredApplications.length > 0 ? (
-                  filteredApplications.map((application, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-md p-4 shadow-sm bg-white"
-                    >
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="font-medium text-gray-800">
-                          {application.leaveTypes}
-                        </span>
-                        <span
-                          className={`text-sm font-semibold px-2 py-1 rounded 
-                ${
-                  application.status === "Pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : application.status === "Accepted"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
+                  <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-lg">
+                    <thead className="bg-gray-100 text-xs text-gray-600 uppercase tracking-wider">
+                      <tr>
+                        <th className="px-4 py-2 text-left">Leave Type</th>
+                        <th className="px-4 py-2 text-left">Status</th>
+                        <th className="px-4 py-2 text-left">From</th>
+                        <th className="px-4 py-2 text-left">To</th>
+                        <th className="px-4 py-2 text-left">Leave Time</th>
+                        <th className="px-4 py-2 text-left">Days</th>
+                        <th className="px-4 py-2 text-left">Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredApplications.map((application, index) => (
+                        <tr
+                          key={index}
+                          className="border-t border-gray-200 hover:bg-gray-50 transition"
                         >
-                          {application.status}
-                        </span>
-                      </div>
-
-                      {/* 🌟 New structured design */}
-                      <div className="text-sm text-gray-600 grid grid-cols-2 gap-x-4 gap-y-1">
-                        <div>
-                          <span className="font-medium">From:</span>{" "}
-                          {formatDate(application.startDate)}
-                        </div>
-                        <div>
-                          <span className="font-medium">To:</span>{" "}
-                          {formatDate(application.endDate)}
-                        </div>
-                        <div>
-                          <span className="font-medium">Leave Time:</span>{" "}
-                          {application.leaveTimes}
-                        </div>
-                        <div>
-                          <span className="font-medium">Number of Days:</span>{" "}
-                          {application.noOfDays}
-                        </div>
-                        <div className="col-span-2 text-gray-500 mt-2">
-                          <span className="font-medium">Reason:</span>{" "}
-                          {application.reason}
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                          <td className="px-4 py-3">
+                            {application.leaveTypes}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`text-sm font-semibold px-2 py-1 rounded-full inline-block
+                    ${
+                      application.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : application.status === "Accepted"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                            >
+                              {application.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {formatDate(application.startDate)}
+                          </td>
+                          <td className="px-4 py-3">
+                            {formatDate(application.endDate)}
+                          </td>
+                          <td className="px-4 py-3">
+                            {application.leaveTimes}
+                          </td>
+                          <td className="px-4 py-3">{application.noOfDays}</td>
+                          <td className="px-4 py-3">{application.reason}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 ) : (
-                  <div className="text-gray-500">
+                  <div className="text-center text-gray-500 italic mt-4">
                     No leave applications found for this month
                   </div>
                 )}
               </div>
             </div>
-            </div>
 
-            {/* {taskMessage && (
-        <div
-          style={{
-            fontSize: "20px",
-            fontWeight: "bold",
-            color: "red",
-            textAlign: "center",
-            animation: "blinkZoom 3s infinite",
-          }}
-        >
-          {taskMessage}
-        </div>
-      )} */}
-
-            {/* {taskMessage === "Please upload your daily task" && (
-        <div style={{ textAlign: "center", marginTop: "10px" }}>
-          <button onClick={handleTaskUpload} style={{ margin: "5px", padding: "10px" }}>
-            Mark Task as Uploaded
-          </button>
-        </div>
-      )}
-
-      
-      {taskMessage === "Please upload your today's report" && (
-        <div style={{ textAlign: "center", marginTop: "10px" }}>
-          <button onClick={handleReportUpload} style={{ margin: "5px", padding: "10px" }}>
-            Mark Report as Uploaded
-          </button>
-        </div>
-      )}  */}
-
-            {/* Inline CSS for Blink & Zoom Effect */}
-            <style>
-              {`
-          @keyframes blinkZoom {
-            0% { opacity: 0; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(1); }
-          }
-        `}
-            </style>
+            {/* Optional animation keyframe */}
+            <style>{`
+    @keyframes blinkZoom {
+      0% { opacity: 0; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+  `}</style>
           </div>
+
+          {/* Optional task message area - currently commented */}
+          {/*
+  {taskMessage && (
+    <div
+      style={{
+        fontSize: "20px",
+        fontWeight: "bold",
+        color: "red",
+        textAlign: "center",
+        animation: "blinkZoom 3s infinite",
+      }}
+    >
+      {taskMessage}
+    </div>
+  )}
+
+  {taskMessage === "Please upload your daily task" && (
+    <div style={{ textAlign: "center", marginTop: "10px" }}>
+      <button onClick={handleTaskUpload} style={{ margin: "5px", padding: "10px" }}>
+        Mark Task as Uploaded
+      </button>
+    </div>
+  )}
+
+  {taskMessage === "Please upload your today's report" && (
+    <div style={{ textAlign: "center", marginTop: "10px" }}>
+      <button onClick={handleReportUpload} style={{ margin: "5px", padding: "10px" }}>
+        Mark Report as Uploaded
+      </button>
+    </div>
+  )}
+  */}
 
           {/* 
           <StatsCard>
@@ -1229,7 +1226,7 @@ const EmployeeMaster = () => {
           </CalendarCard> */}
 
         <SideSection>
-          <CalendarCard>
+          <CalendarCard className="mb-6">
             <div className="calendar-header">
               <FaCalendarAlt size={24} color="#2563eb" />
               <h3>Calendar</h3>
@@ -1265,7 +1262,7 @@ const EmployeeMaster = () => {
           </CalendarCard>
 
           {/* Auto Pop-Up for Today's Events */}
-          {isModalOpen && (
+          {isModelOpen && !hasModalShownToday && (
             <div
               style={{
                 position: "fixed",
@@ -1359,7 +1356,7 @@ const EmployeeMaster = () => {
             </div>
           )}
 
-          <UpcomingCard>
+          <UpcomingCard className="mt-6 mb-6" style={{ marginTop: "-20px" }}>
             <h3>Upcoming Events</h3>
             {upcomingEventsWithin2Days.length > 0 ? (
               <ul>
@@ -1393,47 +1390,28 @@ const EmployeeMaster = () => {
             )}
           </UpcomingCard>
 
-          {/* <UpcomingCard>
-            <h3>Upcoming Events</h3>
-            {upcomingEventsWithin2Days.length > 0 ? (
-              <ul>
-                {upcomingEventsWithin2Days.map((evt, idx) => (
-                  <li key={idx}>
-                    {evt.date} - {evt.event}
+          <div
+            className="mt-6 bg-white p-4 rounded-xl shadow-sm"
+            style={{ marginTop: "-20px" }}
+          >
+            <h1 className="text-lg font-semibold text-gray-800 mb-4">
+              Upcoming Holidays
+            </h1>
+            <ul className="space-y-2 text-sm text-gray-600">
+              {holidays.length > 0 ? (
+                holidays.map((holiday) => (
+                  <li key={holiday.id}>
+                    <span className="font-medium">{holiday.eventName}</span> —{" "}
+                    {formatDate(holiday.startDate)}
                   </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No Upcoming Events.</p>
-            )}
-          </UpcomingCard> */}
-
-          {/* <UpcomingCard>
-  <h3>Upcoming Events</h3>
-  {upcomingEventsWithin2Days.length > 0 ? (
-    <ul>
-      {upcomingEventsWithin2Days.map((evt, idx) => (
-        <li key={idx} className="flex items-center gap-3 mb-2">
-          <img
-            src={evt.profileUrl}
-            alt="Profile"
-            className="w-10 h-10 rounded-full"
-          />
-          <span>{evt.date} - {evt.event}</span>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No Upcoming Events.</p>
-  )}
-</UpcomingCard> */}
-
-          {/* <PieChartWrapper>
-            <div style={{ width: "200px", height: "200px" }}>
-              <span>Late Punch Records</span>
-              <Pie data={pieData} options={pieOptions} />
-            </div>
-          </PieChartWrapper> */}
+                ))
+              ) : (
+                <li className="text-sm text-gray-500">
+                  No upcoming holidays in the next 3 months.
+                </li>
+              )}
+            </ul>
+          </div>
         </SideSection>
       </ContentArea>
     </DashboardContainer>

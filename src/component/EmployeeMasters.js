@@ -1046,7 +1046,7 @@ const EmployeeMaster = () => {
                         <th className="px-4 py-2 text-left">Status</th>
                         <th className="px-4 py-2 text-left">From</th>
                         <th className="px-4 py-2 text-left">To</th>
-                        <th className="px-4 py-2 text-left">Leave Time</th>
+                        <th className="px-4 py-2 text-left whitespace-nowrap">Leave Time</th>
                         <th className="px-4 py-2 text-left">Days</th>
                         <th className="px-4 py-2 text-left">Reason</th>
                       </tr>

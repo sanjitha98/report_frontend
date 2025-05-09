@@ -284,7 +284,7 @@
 //                         {userType !== "Admin" && (
 //                           <td className="px-4 py-3">
 //                             <button
-                             
+
 //                               onClick={() => handleDelete(value.id)}
 //                             >
 //                               <FontAwesomeIcon icon={faTrash} />
@@ -315,18 +315,6 @@
 // };
 
 // export default IdCardList;
-
-
-
-
-
-
-
-
-
-
-
-
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -441,12 +429,14 @@ const IdCardList = () => {
 
     const fetchEmployeeList = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/employee_list/`);
-        if (response.data.status === 'Success') {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/employee_list/`
+        );
+        if (response.data.status === "Success") {
           setEmployeeList(response.data.data);
         }
       } catch (err) {
-        console.error('Error fetching employee list:', err);
+        console.error("Error fetching employee list:", err);
       }
     };
 
@@ -524,7 +514,10 @@ const IdCardList = () => {
       <h5>ID Card Report</h5>
 
       <div className="container mx-auto">
-        <div date-rangepicker className="my-4 flex flex-col sm:flex-row items-center">
+        <div
+          date-rangepicker
+          className="my-4 flex flex-col sm:flex-row items-center"
+        >
           <div className="flex flex-col sm:flex-row">
             <input
               type="date"
@@ -568,12 +561,12 @@ const IdCardList = () => {
           </div>
         </div>
 
-        {filteredIdCardList.length > 0 ? (
+        {idCardList.length > 0 ? (
           <div className="overflow-auto" style={{ maxHeight: "470px" }}>
             <table className="w-full text-sm text-left rtl:text-right text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-slate-200 sticky top-0">
                 <tr>
-                  {(userType === "employee" || "Employee"
+                  {(userType === "employee" || userType === "Employee"
                     ? employeeTableHeaders
                     : adminTableHeaders
                   ).map((title, index) => (
@@ -583,7 +576,92 @@ const IdCardList = () => {
                   ))}
                 </tr>
               </thead>
-              {Object.keys(groupedIdCardList).length > 0 ? (
+
+              <tbody>
+                {idCardList.length > 0 ? (
+                  idCardList.map((data, index) => {
+                    const reportDate = moment(data.reportDate).format(
+                      "DD-MM-YYYY"
+                    );
+                    const employeeName = data.employeeName || employeeId;
+
+                    return data.reports.map((value, subIndex) => (
+                      <tr
+                        className="odd:bg-white even:bg-gray-50 border text-gray-600 whitespace-nowrap"
+                        key={`${index}-${subIndex}`}
+                      >
+                        {subIndex === 0 && (
+                          <>
+                            <td
+                              rowSpan={data.reports.length}
+                              className="border px-4 py-2"
+                            >
+                              {index + 1}
+                            </td>
+                            <td
+                              rowSpan={data.reports.length}
+                              className="px-4 py-3"
+                            >
+                              {reportDate}
+                            </td>
+                            {userType === "Admin" && (
+                              <td
+                                rowSpan={data.reports.length}
+                                className="px-4 py-3"
+                              >
+                                {employeeName}
+                              </td>
+                            )}
+                          </>
+                        )}
+
+                        <td className="px-4 py-3">{value.application}</td>
+                        <td className="px-4 py-3">{value.location}</td>
+                        <td className="px-4 py-3">{value.receivedDate}</td>
+                        <td className="px-4 py-3">{value.regNo}</td>
+                        <td className="px-4 py-3">{value.noOfForms}</td>
+                        <td className="px-4 py-3">{value.scanning}</td>
+                        <td className="px-4 py-3">{value.typing}</td>
+                        <td className="px-4 py-3">{value.photoshop}</td>
+                        <td className="px-4 py-3">{value.coraldraw}</td>
+                        <td className="px-4 py-3">{value.underPrinting}</td>
+                        <td className="px-4 py-3">{value.toBeDelivered}</td>
+                        <td className="px-4 py-3">{value.delivered}</td>
+
+                        {userType !== "Admin" && (
+                            <td className="px-4 py-3">
+                              <button onClick={() => handleEdit(value.id)}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </button>
+                            </td>
+                          )}
+                          {userType !== "Admin" && (
+                            <td className="px-4 py-3">
+                              <button
+                                // style={{ backgroundColor: "red", color: "white", padding: 5 }}
+                                onClick={() => handleDelete(value.id)}
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </td>
+                          )}
+                      </tr>
+                    ));
+                  })
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={userType === "Admin" ? 17 : 16}
+                      className="text-center py-4"
+                    >
+                      No data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* {Object.keys(groupedIdCardList).length > 0 ? (
                 <tbody>
                   {Object.entries(groupedIdCardList).map(
                     ([key, group], groupIndex) => {
@@ -596,15 +674,23 @@ const IdCardList = () => {
                         >
                           {index === 0 && (
                             <>
-                              <td rowSpan={group.length} className="border px-4 py-2">
+                              <td
+                                rowSpan={group.length}
+                                className="border px-4 py-2"
+                              >
                                 {groupIndex + 1}{" "}
                               </td>
                               <td rowSpan={group.length} className="px-4 py-3">
                                 {reportDate}
                               </td>
-                              {userType === "Admin" &&<td rowSpan={group.length} className="px-4 py-3">
-                                {employeeName}
-                              </td>}
+                              {userType === "Admin" && (
+                                <td
+                                  rowSpan={group.length}
+                                  className="px-4 py-3"
+                                >
+                                  {employeeName}
+                                </td>
+                              )}
                             </>
                           )}
 
@@ -622,9 +708,7 @@ const IdCardList = () => {
                           <td className="px-4 py-3">{value.delivered}</td>
                           {userType !== "Admin" && (
                             <td className="px-4 py-3">
-                              <button
-                                onClick={() => handleEdit(value.id)}
-                              >
+                              <button onClick={() => handleEdit(value.id)}>
                                 <FontAwesomeIcon icon={faEdit} />
                               </button>
                             </td>
@@ -647,13 +731,16 @@ const IdCardList = () => {
               ) : (
                 <tbody>
                   <tr>
-                    <td colSpan={userType === "Admin" ? 17 : 16} className="text-center">
+                    <td
+                      colSpan={userType === "Admin" ? 17 : 16}
+                      className="text-center"
+                    >
                       No data available
                     </td>
                   </tr>
                 </tbody>
-              )}
-            </table>
+              )} */}
+            {/* </table> */}
           </div>
         ) : (
           <div className="text-center text-gray-500">No data available</div>

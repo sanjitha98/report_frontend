@@ -16386,22 +16386,22 @@ const { isAuth, userData } = useSelector((state) => state.login);
     }
   };
 
-  const fetchEmployees = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/addEmployee`
-      );
-      if (response.data.status === "Success") {
-        setEmployees(response.data.employees); // Store employee list in state
-      }
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  };
+//   const fetchEmployees = async () => {
+//     try {
+//       const response = await axios.get(
+//         `${process.env.REACT_APP_API_URL}/addEmployee`
+//       );
+//       if (response.data.status === "Success") {
+//         setEmployees(response.data.employees); // Store employee list in state
+//       }
+//     } catch (error) {
+//       console.error("Error fetching employees:", error);
+//     }
+//   };
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+//   useEffect(() => {
+//     fetchEmployees();
+//   }, []);
 
   useEffect(() => {
     fetchReportData(); // Fetch reports data on component mount or state changes

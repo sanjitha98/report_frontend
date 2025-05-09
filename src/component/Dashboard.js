@@ -1474,14 +1474,14 @@ M16 14v6"
                   <Link
                     to="/dashboard/project-assign-list"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                      location.pathname === "/dashboard/employeeTask"
+                      location.pathname === "/dashboard/project-assign-list"
                         ? "bg-gray-100"
                         : ""
                     }`}
                   >
                     <svg
                       className={`flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-orange-500 ${
-                        location.pathname === "/dashboard/employeeTask"
+                        location.pathname === "/dashboard/project-assign-list"
                           ? "text-orange-500"
                           : ""
                       }`}

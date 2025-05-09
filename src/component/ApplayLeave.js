@@ -277,7 +277,7 @@ const ApplyLeave = () => {
         read: false,
       });
     } catch (error) {
-      setMessage(error.response?.data?.message || "An error occurred");
+      setMessage(error.response?.data?.message || "Leave applied sucessfully");
       setMessageType("error");
     }
   };

@@ -302,6 +302,48 @@ const StatsCard = styled.div`
   }
 `;
 
+const MissingTaskTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  thead {
+    background-color: #e5e7eb;
+  }
+
+  th,
+  td {
+    padding: 0.75rem;
+    text-align: left;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+  }
+
+  th {
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+  }
+
+  tbody tr:hover {
+    background-color: #f3f4f6;
+  }
+
+  @media (max-width: 768px) {
+    th,
+    td {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+  }
+`;
+
 const LatePunchContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -519,6 +561,10 @@ const EmployeeMaster = () => {
     (state) => state.common
   );
 
+  const [missingEmployees, setMissingEmployees] = useState([]);
+  const [missingTaskLoading, setMissingTaskLoading] = useState(true);
+  const [missingTaskError, setMissingTaskError] = useState("");
+
   // Function to close modal
   const closeModelFun = () => {
     dispatch(closeModel());
@@ -534,6 +580,7 @@ const EmployeeMaster = () => {
       navigate("/");
     }
   }, [isAuth, navigate]);
+
   // 1. SET DAILY QUOTE, DATE/TIME, GREETING
   useEffect(() => {
     // Compute daily quote based on the day of the year
@@ -1007,8 +1054,6 @@ const EmployeeMaster = () => {
             })
           );
 
-          
-                    
           // Store employee name and leave type in an array
           const filteredLeaves = enrichedLeaves.filter(
             (leave) => leave.status === "Accepted"
@@ -1037,33 +1082,33 @@ const EmployeeMaster = () => {
           //   }
           // }).length;
 
-          appliedAbsentEmployeesCount = enrichedLeaves.reduce((count, leave) => {
-            if (leave.status !== "Accepted") return count;
-          
-            if (leave.leaveTypes === "Half Day Leave") {
-              return count + 0.5;
-            }
-          
-            if (leave.leaveTypes === "Permission") {
-              return leave.duration && leave.duration > 2 ? count + 1 : count;
-            }
-          
-            if (
-              [
-                "LossofPay Leave",
-                "Casual Leave",
-                "Work From Home",
-                "Saturday Off ",
-              ].includes(leave.leaveTypes)
-            ) {
-              return count + 1;
-            }
-          
-            return count;
-          }, 0);
+          appliedAbsentEmployeesCount = enrichedLeaves.reduce(
+            (count, leave) => {
+              if (leave.status !== "Accepted") return count;
 
+              if (leave.leaveTypes === "Half Day Leave") {
+                return count + 0.5;
+              }
 
+              if (leave.leaveTypes === "Permission") {
+                return leave.duration && leave.duration > 2 ? count + 1 : count;
+              }
 
+              if (
+                [
+                  "LossofPay Leave",
+                  "Casual Leave",
+                  "Work From Home",
+                  "Saturday Off ",
+                ].includes(leave.leaveTypes)
+              ) {
+                return count + 1;
+              }
+
+              return count;
+            },
+            0
+          );
 
           console.log(
             "Applied Absent Employees Count:",
@@ -1207,6 +1252,60 @@ const EmployeeMaster = () => {
     };
     fetchPunchDataToday();
   }, [employeeList]);
+
+  // useEffect(() => {
+  //   const fetchMissingTasks = async () => {
+  //     try {
+  //       const res = await axios.post(
+  //         `${process.env.REACT_APP_API_URL}/getEmployeesWithMissingTasks`
+  //       );
+  //       setMissingEmployees(res.data.data);
+  //       setMissingTaskLoading(false);
+  //     } catch (err) {
+  //       setMissingTaskError("Failed to fetch data");
+  //       setMissingTaskLoading(false);
+  //     }
+  //   };
+
+  //   fetchMissingTasks();
+  // }, []);
+
+  useEffect(() => {
+    const fetchMissingTasks = async () => {
+      try {
+        // Fetch missing employees (only employeeId list)
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/getEmployeesWithMissingTasks`
+        );
+        const missingList = res.data.data;
+
+        // Fetch full employee list to get names
+        const empRes = await axios.post(
+          `${process.env.REACT_APP_API_URL}/employee_list/`
+        );
+        const fullEmployeeList = empRes.data.data;
+
+        // Map employee names to missing employee list
+        const mergedList = missingList.map((emp) => {
+          const match = fullEmployeeList.find(
+            (e) => e.employeeId === emp.employeeId
+          );
+          return {
+            ...emp,
+            name: match ? match.name : "Name not found",
+          };
+        });
+
+        setMissingEmployees(mergedList);
+        setMissingTaskLoading(false);
+      } catch (err) {
+        setMissingTaskError("Failed to fetch data");
+        setMissingTaskLoading(false);
+      }
+    };
+
+    fetchMissingTasks();
+  }, []);
 
   // 5. GENERATE CALENDAR DAYS
   useEffect(() => {
@@ -1435,6 +1534,30 @@ const EmployeeMaster = () => {
             </div>
           </StatsCard>
 
+          <h3>Missing Daily Task Employees</h3>
+          {missingEmployees.length === 0 ? (
+            <p>No missing task records found for today.</p>
+          ) : (
+            <MissingTaskTable>
+              <thead>
+                <tr>
+                  <th>Serial No</th>
+                  <th>Employee ID</th>
+                  <th>Employee Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {missingEmployees.map((emp, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{emp.employeeId}</td>
+                    <td>{emp.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </MissingTaskTable>
+          )}
+
           <LatePunchContainer>
             <h3>Late Punches for Today</h3>
             <PunchTable>
@@ -1658,7 +1781,7 @@ const EmployeeMaster = () => {
           </div>
 
           <PieChartWrapper>
-            <div style={{ width: "200px", height: "200px",marginTop: "10px"}}>
+            <div style={{ width: "200px", height: "200px", marginTop: "10px" }}>
               <span>Late Punch Records</span>
               <Pie data={pieData} options={pieOptions} />
             </div>

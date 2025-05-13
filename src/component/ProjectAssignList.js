@@ -353,29 +353,35 @@ const ProjectAssignList = () => {
         `${process.env.REACT_APP_API_URL}/dailypunch`,
         { date: todayDate }
       );
-      const punchData = response.data.data;
+      const punchData = response.data;
 
        const userPunch = punchData.find(
       (entry) => entry.employeeId === employeeId && entry.logType === "In"
     );
+    console.log("userPunch",userPunch);
+    
+    if (userPunch && userPunch.refTime) {
+    const punchTime = moment(userPunch.refTime, "HH:mm:ss");
+    
+    const punchMinutes = punchTime.hours() * 60 + punchTime.minutes();
 
-      if (userPunch && userPunch.logTime) {
-      const punchTime = moment(userPunch.logTime);
-      const punchMinutes = punchTime.hours() * 60 + punchTime.minutes();
+    const now = moment();
+    const nowMinutes = now.hours() * 60 + now.minutes();
 
-      const now = moment();
-      const nowMinutes = now.hours() * 60 + now.minutes();
+    const cutoffMinutes = 9 * 60 + 30; // 9:30 AM
 
-        if (punchMinutes > 9 * 60 + 30) {
-        const validFrom = punchMinutes;
-        const validTo = punchMinutes + 15;
-        setIsAllowedTime(nowMinutes >= validFrom && nowMinutes <= validTo);
-      } else {
-        setIsAllowedTime(true); // Before or at 9:30 AM is allowed anytime
-      }
+    if (punchMinutes <= cutoffMinutes) {
+      // Punched before or at 9:30 AM → allow until 9:45 AM
+      setIsAllowedTime(nowMinutes <= 9 * 60 + 45);
     } else {
-      setIsAllowedTime(false);
+      // Punched after 9:30 AM → allow for 15 minutes from punch time
+      const validFrom = punchMinutes;
+      const validTo = punchMinutes + 15;
+      setIsAllowedTime(nowMinutes >= validFrom && nowMinutes <= validTo);
     }
+  } else {
+    setIsAllowedTime(false); // Not punched in
+  }
   } catch (err) {
     console.error("Failed to fetch punch data", err);
   }
@@ -484,7 +490,7 @@ const ProjectAssignList = () => {
           onClick={() =>
             isAdmin
               ? navigate("/dashboard/project-assign")
-              : navigate("/dashboard/task-assign")
+              : navigate("/dashboard/project-assign")
           }
           disabled={!isAllowedTime && !isAdmin}
           className={`px-6 py-3 rounded-xl transition-all ${

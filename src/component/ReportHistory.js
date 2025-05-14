@@ -133,6 +133,7 @@ import "react-datepicker/dist/react-datepicker.css";
 const EmployeeReportList = React.lazy(() => import(/* webpackPrefetch: true */ "../module/EmployeeReportList"));
 const IdCardList = React.lazy(() => import(/* webpackPrefetch: true */ "../module/IdCardList"));
 const TaskList = React.lazy(() => import(/* webpackPrefetch: true */ "../module/TaskList"));
+const TaskListOld = React.lazy(() => import(/* webpackPrefetch: true */ "../module/TaskListOld"));
 
 const ReportHistory = () => {
   const location = useLocation();
@@ -165,6 +166,13 @@ const ReportHistory = () => {
                 </button>
               </Link>
             </li>
+            <li>
+              <Link to="/dashboard/report-history/taskListOld">
+                <button className={`px-6 py-2 rounded-full border-2 border-blue-500 text-blue-500 hover:bg-blue-100 transition`}>
+                  Daily Task Old
+                </button>
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
@@ -177,6 +185,7 @@ const ReportHistory = () => {
             <Route path="/" element={<EmployeeReportList />} />
             <Route path="/id-card-report" element={<IdCardList />} />
             <Route path="/taskList" element={<TaskList />} />
+            <Route path="/taskListOld" element={<TaskListOld />} />
           </Routes>
         </Suspense>
       </div>

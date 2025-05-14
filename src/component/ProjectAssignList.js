@@ -507,7 +507,7 @@ const ProjectAssignList = () => {
 
       {!isAdmin && !isAllowedTime && (
         <p className="text-red-600 text-sm text-right">
-          Task assignment allowed only for 15 minutes after your punch-in if you punched in after 9:30 AM.
+          Task assignment allowed only within 15 minutes of punch-in after 9:30 AM
         </p>
       )}
 
@@ -591,6 +591,7 @@ const ProjectAssignList = () => {
           <table className="min-w-full border border-gray-300 table-auto shadow-lg rounded-xl text-sm">
             <thead className="bg-blue-100 text-blue-900 font-semibold">
               <tr>
+                <th className="p-3 border border-gray-300">S.No</th>
                 {isAdmin && (
                   <th className="p-3 border border-gray-300">Employee</th>
                 )}
@@ -606,8 +607,11 @@ const ProjectAssignList = () => {
               </tr>
             </thead>
             <tbody>
-              {assignments.map((assign) => (
+              {assignments.map((assign, index) => (
                 <tr key={assign.id} className="text-center hover:bg-gray-100">
+                  <td className="p-3 border border-gray-300">
+                      {index + 1}
+                    </td>
                   {isAdmin && (
                     <td className="p-3 border border-gray-300">
                       {assign.employee_name}

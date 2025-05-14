@@ -27,7 +27,7 @@ const AddTask = () => {
     task_status: "",
     remarks: "",
     employee_id: localStorage.getItem("employeeId"),
-    employee_name: localStorage.getItem("employeeName")
+    employee_name: localStorage.getItem("employeeName"),
   });
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -111,6 +111,7 @@ const AddTask = () => {
               : null,
 
             task_status: assignedTask.taskStatus || "",
+            reason_for_incomplete: assignedTask.reason_for_incomplete || "",
             remarks: assignedTask.remarks || "",
             created_by: assignedTask.created_by || "",
           }));
@@ -311,6 +312,23 @@ const AddTask = () => {
         </div>
 
         <div style={{ marginBottom: "15px" }}>
+          <label>Reason for Incomplete</label>
+          <textarea
+            name="reason_for_incomplete"
+            value={taskData.reason_for_incomplete}
+            onChange={handleChange}
+            // placeholder="reason_for_incomplete"
+            rows={3}
+            style={{
+              width: "100%",
+              padding: "8px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
           <label>Remarks</label>
           <textarea
             name="remarks"
@@ -326,39 +344,44 @@ const AddTask = () => {
             }}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "30px" }}>
-  <button
-    type="submit"
-    style={{
-      padding: "10px 30px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "8px",
-      fontWeight: "bold",
-      cursor: "pointer",
-    }}
-  >
-    Add Task
-  </button>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "30px",
+          }}
+        >
+          <button
+            type="submit"
+            style={{
+              padding: "10px 30px",
+              backgroundColor: "#007bff",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Add Task
+          </button>
 
-  <button
-    type="button"
-    onClick={() => navigate("/dashboard/project-assign-list")}
-    style={{
-      padding: "10px 30px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "8px",
-      fontWeight: "bold",
-      cursor: "pointer",
-    }}
-  >
-    Cancel
-  </button>
-</div>
-
+          <button
+            type="button"
+            onClick={() => navigate("/dashboard/project-assign-list")}
+            style={{
+              padding: "10px 30px",
+              backgroundColor: "#007bff",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

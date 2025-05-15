@@ -23,10 +23,10 @@
 //     "Work From Home",
 //     "Maternity Leave",
 //     "Permission",
-//     "LossofPay Leave", // Added Loss of Pay option
+//     "Loss of Pay Leave", // Note the correction here (should read "Loss of Pay Leave")
 //   ];
 
-//   const fullDayOptions = ["Full day", "Halfday"];
+//   const fullDayOptions = ["Full day", "Half day"];
 //   const permissionOptions = ["1 hour", "2 hours"];
 
 //   useEffect(() => {
@@ -57,14 +57,21 @@
 //     setMessage("");
 
 //     try {
+//       // Submit leave request
 //       const response = await axios.post(
 //         `${process.env.REACT_APP_API_URL}/applyLeave`,
 //         formData
 //       );
 //       setMessage(response.data.message);
 //       setMessageType("success");
+
+//       // Notify the admin about the leave request
+//       await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
+//         message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
+//         read: false,
+//       });
 //     } catch (error) {
-//       setMessage(error.response?.data?.message || "An error occurred");
+//       setMessage(error.response?.data?.message || "Leave applied sucessfully");
 //       setMessageType("error");
 //     }
 //   };
@@ -202,8 +209,6 @@
 
 // export default ApplyLeave;
 
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ApplayLeave.css"; // Import the custom CSS
@@ -253,9 +258,27 @@ const ApplyLeave = () => {
     return selectedDate.getDay() === 6;
   };
 
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    let updatedForm = { ...formData, [name]: value };
+
+    const oneDayLeaves = ["Saturday Off", "Casual Leave"];
+
+    // Auto-update end date for one-day leaves
+    if (
+      (name === "leaveTypes" && oneDayLeaves.includes(value)) ||
+      (name === "startDate" && oneDayLeaves.includes(formData.leaveTypes))
+    ) {
+      updatedForm.endDate = updatedForm.startDate || value;
+    }
+
+    setFormData(updatedForm);
   };
 
   const handleSubmit = async (e) => {
@@ -314,6 +337,14 @@ const ApplyLeave = () => {
             </div>
             <div className="col-md-6 apply-leave-form-group">
               <label className="apply-leave-label">End Date</label>
+              {/* <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                className="apply-leave-input"
+                required
+              /> */}
               <input
                 type="date"
                 name="endDate"
@@ -321,6 +352,10 @@ const ApplyLeave = () => {
                 onChange={handleChange}
                 className="apply-leave-input"
                 required
+                disabled={
+                  formData.leaveTypes === "Saturday Off" ||
+                  formData.leaveTypes === "Casual Leave"
+                }
               />
             </div>
           </div>

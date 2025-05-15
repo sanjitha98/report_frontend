@@ -532,10 +532,12 @@ const ProjectAssignForm = () => {
   const { userData } = useSelector((state) => state.login);
   const employeeId = userData ? userData.employeeId : null;
   const userType = userData ? userData.userType : null;
+  const designation = userData ? userData.designation : null;
   const location = useLocation();
   const [employees, setEmployees] = useState([]);
   const [projects, setProjects] = useState([]);
   const id = location.state?.id || null;
+  const createdBy = location.state?.created_by || null;
   const [formData, setFormData] = useState({
     employee_id: "",
     employee_name: "",
@@ -548,7 +550,9 @@ const ProjectAssignForm = () => {
   });
   const buttonText = id ? "Update Assign Project" : "Assign Project";
   const currentDate = new Date().toISOString().slice(0, 10);
-  const isAdmin = userType === "Admin";
+  const isAdmin = userType === "Admin" || designation === "Sr. Technical Head";
+  const isDisabled = createdBy !== userType;
+  console.log(isDisabled, createdBy, isAdmin);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -638,9 +642,7 @@ const ProjectAssignForm = () => {
       created_by: userType,
       id: id || undefined, // Only include id for editing
     };
-    console.log("userType:", userType);
-    console.log("created_by value:", isAdmin ? "Admin" : "employees");
-    console.log("Payload being sent:", payload);
+
     try {
       let res;
       // Use the same API for both create and update
@@ -657,9 +659,6 @@ const ProjectAssignForm = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-8">
-        {/* <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
-          Project Assign
-        </h2> */}
         <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
           {isAdmin ? "Project Assign" : "Assign Task"}
         </h2>
@@ -691,6 +690,7 @@ const ProjectAssignForm = () => {
               </select>
             ) : (
               <input
+                disabled={isDisabled}
                 type="text"
                 value={formData.employee_name}
                 readOnly
@@ -739,6 +739,7 @@ const ProjectAssignForm = () => {
           <div>
             <label className="block mb-1 text-gray-600">Assigned Date</label>
             <input
+              disabled={isDisabled}
               type="datetime-local"
               name="assigned_date"
               value={formData.assigned_date}
@@ -751,6 +752,7 @@ const ProjectAssignForm = () => {
           <div>
             <label className="block mb-1 text-gray-600">Deadline Date</label>
             <input
+              disabled={isDisabled}
               type="datetime-local"
               name="deadline_date"
               value={formData.deadline_date}
@@ -762,6 +764,7 @@ const ProjectAssignForm = () => {
           <div>
             <label className="block mb-1 text-gray-600">Estimated Time</label>
             <input
+              disabled={isDisabled}
               name="estimated_time"
               value={formData.estimated_time}
               onChange={handleChange}
@@ -773,6 +776,7 @@ const ProjectAssignForm = () => {
           <div className="md:col-span-2">
             <label className="block mb-1 text-gray-600">Task Name</label>
             <textarea
+              disabled={isDisabled}
               name="task_details"
               value={formData.task_details}
               onChange={handleChange}
@@ -784,6 +788,7 @@ const ProjectAssignForm = () => {
           <div className="md:col-span-2">
             <label className="block mb-1 text-gray-600">Task Description</label>
             <textarea
+              disabled={isDisabled}
               name="task_description"
               value={formData.task_description}
               onChange={handleChange}
@@ -793,12 +798,14 @@ const ProjectAssignForm = () => {
           </div>
 
           <div className="md:col-span-2 flex justify-between mt-4">
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl transition-all hover:bg-blue-700"
-            >
-              {buttonText}
-            </button>
+            {!isDisabled && (
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-3 rounded-xl transition-all hover:bg-blue-700"
+              >
+                {buttonText}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/dashboard/project-assign-list")}

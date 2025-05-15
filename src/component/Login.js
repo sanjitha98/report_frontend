@@ -56,7 +56,7 @@
 //   };
 
 //   const handleForgotPassword = () => {
-//     navigate("/forgotpassword"); 
+//     navigate("/forgotpassword");
 //   };
 
 //   return (
@@ -123,14 +123,6 @@
 
 // export default Login;
 
-
-
-
-
-
-
-
-
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../Redux/slice/loginSlice";
@@ -153,7 +145,8 @@ const Login = () => {
   const passwordInputRef = useRef(null); // Ref for password input
 
   useEffect(() => {
-    if (isAuth && userData) { // Check if userData is defined
+    if (isAuth && userData) {
+      // Check if userData is defined
       if (userData.userType === "Admin") {
         navigate("/dashboard/dashboard");
       } else {
@@ -167,7 +160,6 @@ const Login = () => {
       navigate("/dashboard"); // Redirecting correctly
     }
   }, [isAuth, userData, navigate]);*/
-
 
   // Focus on username field on component mount
   useEffect(() => {
@@ -191,19 +183,27 @@ const Login = () => {
         dispatch(logIn(data));
 
         // Save employeeId and employeeName to local storage
-        localStorage.setItem('employeeId', data.employeeId);
-        localStorage.setItem('employeeName', data.employeeName);
-        localStorage.setItem('userName', data.userName);
+        localStorage.setItem("employeeId", data.employeeId);
+        localStorage.setItem("employeeName", data.employeeName);
+        localStorage.setItem("userName", data.userName);
 
-        navigate(data.userType === "Admin" ? "/dashboard/dashboard" : "/dashboard/dashboards");
+        navigate(
+          data.userType === "Admin"
+            ? "/dashboard/dashboard"
+            : "/dashboard/dashboards"
+        );
         //navigate(data.userType === "employee" ? "/dashboard/dashbaords" : "/dashboard");
-        
+
         // navigate(data.userType === "Admin" ? "/dashboard" : "/dashboard");
         //navigate("/dashboard");
       }
     } catch (error) {
       // Handle backend error
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setErrorMessage(error.response.data.message); // Set error message from backend
       } else {
         setErrorMessage("An unexpected error occurred. Please try again."); // Fallback message
@@ -212,22 +212,25 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    navigate("/forgotpassword"); 
+    navigate("/forgotpassword");
   };
 
   // Handle key press for Enter
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      if (document.activeElement.id === 'username') {
+    if (e.key === "Enter") {
+      if (document.activeElement.id === "username") {
         passwordInputRef.current.focus();
-      } else if (document.activeElement.id === 'password') {
+      } else if (document.activeElement.id === "password") {
         handleSubmit(e);
       }
     }
   };
 
   return (
-    <section className="bg-gray-100 min-h-screen flex items-center justify-center" onKeyPress={handleKeyPress}>
+    <section
+      className="bg-gray-100 min-h-screen flex items-center justify-center"
+      onKeyPress={handleKeyPress}
+    >
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <img src={logo} alt="logo" className="h-16" />
@@ -235,7 +238,12 @@ const Login = () => {
         </div>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-900">Username</label>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Username
+            </label>
             <input
               onChange={(e) => setUsername(e.target.value)}
               value={username}
@@ -247,8 +255,13 @@ const Login = () => {
               required
             />
           </div>
-          <div  className="relative">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-900">Password</label>
+          <div className="relative">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Password
+            </label>
             <input
               onChange={(e) => setPassword(e.target.value)}
               value={password}
@@ -261,14 +274,13 @@ const Login = () => {
               required
             />
 
-<button
-    type="button"
-    onClick={() => setShowPassword(!showPassword)}
-    className="absolute top-1/2 right-2 transform -translate-y-1 text-gray-600"
-  >
-    {showPassword ? "👁" : "👁‍🗨"}
-  </button>
-
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-1/2 right-2 transform -translate-y-1 text-gray-600"
+            >
+              {showPassword ? "👁" : "👁‍🗨"}
+            </button>
           </div>
 
           {/* Display error message */}
@@ -299,5 +311,3 @@ const Login = () => {
 };
 
 export default Login;
-
-

@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 const AddTask = () => {
   const location = useLocation();
   const id = location.state?.id || null;
+  const createdBy = location.state?.created_by || null;
+
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.login);
   const employeeId = userData ? userData.employeeId : null;
@@ -29,10 +31,11 @@ const AddTask = () => {
     employee_id: localStorage.getItem("employeeId"),
     employee_name: localStorage.getItem("employeeName"),
   });
-
+  const isAdmin = userType === "Admin";
+  const isDisabled = createdBy === "Admin" && !isAdmin;
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const isAdmin = userType === "Admin";
+
   const today = moment().startOf("day").toDate();
   const minDate = moment(today).subtract(1, "day").toDate();
   const maxDate = moment(today).add(1, "day").toDate();
@@ -160,7 +163,7 @@ const AddTask = () => {
               name="project_name"
               value={taskData.project_name}
               onChange={handleChange}
-              disabled={isProjectAssigned}
+              disabled={isDisabled}
               style={{
                 width: "450px",
                 padding: "8px",
@@ -178,7 +181,7 @@ const AddTask = () => {
             name="sub_products"
             value={taskData.sub_products}
             onChange={handleChange}
-            disabled={isProjectAssigned}
+            disabled={isDisabled}
             style={{
               width: "100%",
               padding: "8px",
@@ -194,7 +197,8 @@ const AddTask = () => {
             name="task_details"
             value={taskData.task_details}
             onChange={handleChange}
-            disabled={isProjectAssigned}
+            // disabled={isProjectAssigned}
+            disabled={isDisabled}
             style={{
               width: "100%",
               padding: "8px",
@@ -210,7 +214,7 @@ const AddTask = () => {
             name="task_description"
             value={taskData.task_description}
             onChange={handleChange}
-            disabled={isProjectAssigned}
+            disabled={isDisabled}
             style={{
               width: "100%",
               padding: "8px",
@@ -306,7 +310,7 @@ const AddTask = () => {
           >
             <option value="">Select Status</option>
             <option value="In Progress">In Progress</option>
-            <option value="Pending">Pending</option>
+            <option value="In Complete">In Complete</option>
             <option value="Completed">Completed</option>
           </select>
         </div>

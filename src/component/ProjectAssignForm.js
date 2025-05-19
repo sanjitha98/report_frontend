@@ -551,7 +551,7 @@ const ProjectAssignForm = () => {
   const buttonText = id ? "Update Assign Project" : "Assign Project";
   const currentDate = new Date().toISOString().slice(0, 10);
   const isAdmin = userType === "Admin" || designation === "Sr. Technical Head";
-  const isDisabled = createdBy !== userType;
+  const isDisabled = createdBy && createdBy !== userType;
   console.log(isDisabled, createdBy, isAdmin);
 
   useEffect(() => {

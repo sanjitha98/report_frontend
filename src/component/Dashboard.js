@@ -1775,8 +1775,9 @@ M16 14v6"
             <Route path="/addEmployee" element={<AddEmployee />} />
             <Route path="/changePassword" element={<ChangePassword />} />
             <Route path="/teamReport/*" element={<TeamReport />} />
-            <Route path="/applayLeave" element={<ApplayLeave />} />
-            <Route path="/leveStatus" element={<LeveStatus />} />
+            <Route path="/applayLeave" element={<LeveStatus />} />
+            {/* <Route path="/applayLeave" element={<ApplayLeave />} /> */}
+            <Route path="/leveStatus" element={<ApplayLeave />} />
             <Route path="/leaveAcces" element={<LeaveAcces />} />
             <Route path="/punchReport" element={<PunchReport />} />
             <Route path="/projects" element={<ProjectList />} />

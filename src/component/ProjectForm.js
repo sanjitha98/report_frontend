@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import { useLocation, useNavigate } from "react-router-dom";
@@ -366,12 +365,17 @@ const ProjectForm = () => {
         client_name: initialProject.clientname || "",
         project: initialProject.projectName || "",
         subProject: Array.isArray(initialProject.subCategory)
-          ? initialProject.subCategory.join(", ")
+          ? initialProject.subCategory
+              .map((item) => item.trim()) // Trim each string
+              .filter((item) => item) // Remove empty strings
+              .join(", ")
           : "",
+
         projectDomain: initialProject.projectdomain || "",
         platform: initialProject.platform || "",
         contact_details:
-          initialProject.contactDetails && initialProject.contactDetails.length > 0
+          initialProject.contactDetails &&
+          initialProject.contactDetails.length > 0
             ? initialProject.contactDetails
             : [{ contact_number: "", mail_id: "" }],
       });
@@ -466,8 +470,12 @@ const ProjectForm = () => {
       projectdomain: formData.projectDomain || null, // Change to match backend
       platform: formData.platform || null,
       subProject: formData.subProject
-        ? formData.subProject.split(",").map((s) => s.trim())
+        ? formData.subProject
+            .split(",")
+            .map((s) => s.trim())
+            .filter((s) => s)
         : [],
+
       contact_details: formData.contact_details.every(
         (c) => !c.contact_number && !c.mail_id
       )
@@ -477,9 +485,6 @@ const ProjectForm = () => {
             mail_id: contact.mail_id,
           })),
     };
-    
-    
-    
 
     try {
       await axios.post(
@@ -518,7 +523,10 @@ const ProjectForm = () => {
     );
     setFormData((prev) => ({
       ...prev,
-      contact_details: updatedContacts.length > 0 ? updatedContacts : [{ contact_number: "", mail_id: "" }],
+      contact_details:
+        updatedContacts.length > 0
+          ? updatedContacts
+          : [{ contact_number: "", mail_id: "" }],
     }));
   };
 
@@ -531,7 +539,9 @@ const ProjectForm = () => {
 
         {/* Client Name */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Client Name</label>
+          <label className="block text-sm font-semibold mb-1">
+            Client Name
+          </label>
           <input
             type="text"
             name="client_name"
@@ -546,7 +556,9 @@ const ProjectForm = () => {
 
         {/* Project Name */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Project Name</label>
+          <label className="block text-sm font-semibold mb-1">
+            Project Name
+          </label>
           <input
             type="text"
             name="project"
@@ -561,7 +573,9 @@ const ProjectForm = () => {
 
         {/* Project Domain */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Project Domain</label>
+          <label className="block text-sm font-semibold mb-1">
+            Project Domain
+          </label>
           <input
             type="text"
             name="projectDomain"
@@ -576,7 +590,9 @@ const ProjectForm = () => {
 
         {/* Sub Project */}
         <div>
-          <label className="block text-sm font-semibold mb-1">Sub Products</label>
+          <label className="block text-sm font-semibold mb-1">
+            Sub Products
+          </label>
           <input
             type="text"
             name="subProject"
@@ -603,11 +619,18 @@ const ProjectForm = () => {
 
         {/* Contact Details */}
         <div className="space-y-6">
-          <h3 className="text-lg font-bold border-b pb-2">Client Contact Details</h3>
+          <h3 className="text-lg font-bold border-b pb-2">
+            Client Contact Details
+          </h3>
           {formData.contact_details.map((contact, index) => (
-            <div key={index} className="bg-gray-100 p-4 rounded-md space-y-4 shadow">
+            <div
+              key={index}
+              className="bg-gray-100 p-4 rounded-md space-y-4 shadow"
+            >
               <div>
-                <label className="block text-sm font-semibold mb-1">Contact Number</label>
+                <label className="block text-sm font-semibold mb-1">
+                  Contact Number
+                </label>
                 <input
                   type="text"
                   value={contact.contact_number}
@@ -628,7 +651,9 @@ const ProjectForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Client Email</label>
+                <label className="block text-sm font-semibold mb-1">
+                  Client Email
+                </label>
                 <input
                   type="email"
                   value={contact.mail_id}

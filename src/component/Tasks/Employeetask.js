@@ -32,7 +32,7 @@ const AddTask = () => {
     employee_name: localStorage.getItem("employeeName"),
   });
   const isAdmin = userType === "Admin";
-  const isDisabled = createdBy === "Admin" && !isAdmin;
+  const isDisabled = createdBy && createdBy === "Admin" && !isAdmin;
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 

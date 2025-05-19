@@ -209,12 +209,310 @@
 
 // export default ApplyLeave;
 
+
+
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import "./ApplayLeave.css"; // Import the custom CSS
+// import { useNavigate } from "react-router-dom";
+
+// const ApplyLeave = () => {
+//   // const [formData, setFormData] = useState({
+//   //   leaveTypes: "",
+//   //   leaveTimes: "",
+//   //   startDate: "",
+//   //   endDate: "",
+//   //   reason: "",
+//   //   Employee_id: localStorage.getItem("employeeId"),
+//   //   userName: localStorage.getItem("userName"),
+//   // });
+//   const initialFormState = {
+//     leaveTypes: "",
+//     leaveTimes: "",
+//     startDate: "",
+//     endDate: "",
+//     reason: "",
+//     Employee_id: localStorage.getItem("employeeId"),
+//     userName: localStorage.getItem("userName"),
+//   };
+//   const navigate = useNavigate();
+
+
+//   const [formData, setFormData] = useState(initialFormState);
+
+//   const [message, setMessage] = useState("");
+//   const [messageType, setMessageType] = useState(""); // Track success or error
+//   const [casualLeaveUsed, setCasualLeaveUsed] = useState(false); // Track if casual leave has been used
+//   const [saturdayOffUsed, setSaturdayOffUsed] = useState(false); // Track if Saturday Off has been used
+
+//   const leaveTypeOptions = [
+//     "Casual Leave",
+//     "Work From Home",
+//     "Maternity Leave",
+//     "Permission",
+//     "Loss of Pay Leave", // Note the correction here (should read "Loss of Pay Leave")
+//   ];
+
+//   const fullDayOptions = ["Full day", "Half day"];
+//   const permissionOptions = ["1 hour", "2 hours"];
+
+//   useEffect(() => {
+//     const employeeId = localStorage.getItem("employeeId");
+//     const userName = localStorage.getItem("userName");
+
+//     if (employeeId && userName) {
+//       setFormData((prevData) => ({
+//         ...prevData,
+//         Employee_id: employeeId,
+//         userName: userName,
+//       }));
+//     }
+//   }, []);
+
+//   const isSaturday = (date) => {
+//     const selectedDate = new Date(date);
+//     return selectedDate.getDay() === 6;
+//   };
+
+//   // const handleChange = (e) => {
+//   //   const { name, value } = e.target;
+//   //   setFormData({ ...formData, [name]: value });
+//   // };
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+
+//     let updatedForm = { ...formData, [name]: value };
+
+//     const oneDayLeaves = ["Saturday Off", "Casual Leave"];
+
+//     // Auto-update end date for one-day leaves
+//     if (
+//       (name === "leaveTypes" && oneDayLeaves.includes(value)) ||
+//       (name === "startDate" && oneDayLeaves.includes(formData.leaveTypes))
+//     ) {
+//       updatedForm.endDate = updatedForm.startDate || value;
+//     }
+
+//     setFormData(updatedForm);
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setMessage("");
+
+//     try {
+//       // Submit leave request
+//       const response = await axios.post(
+//         `${process.env.REACT_APP_API_URL}/applyLeave`,
+//         formData
+//       );
+//       setMessage(response.data.message);
+//       setMessageType("success");
+
+
+//     try {
+//       await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
+//         message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
+//         read: false,
+//       });
+//     } catch (notificationError) {
+//       console.warn("Notification failed but leave applied:", notificationError);
+//       // You can optionally show a secondary message or ignore this error
+//     }
+//     // ✅ Refresh the page after a short delay
+//     setTimeout(() => {
+//       window.location.reload();
+//     }, 1500); // 1.5 seconds delay to let the user read the message
+
+//   } catch (error) {
+//     // Handle leave submission failure
+//     setMessage(error.response?.data?.message || "Leave application failed");
+//     setMessageType("error");
+//   }
+// };
+//   const handleCancel = () => {
+//     setFormData(initialFormState);
+//     setMessage("");
+//     setMessageType("");
+//     navigate("/dashboard/applayLeave");
+//   };
+
+//   return (
+//     <div className="apply-leave-container">
+//       <div className="apply-leave-card">
+//         <h2 className="apply-leave-title">Apply for Leave</h2>
+
+//         {message && (
+//           <div
+//             className={`apply-leave-alert ${
+//               messageType === "success"
+//                 ? "apply-leave-alert-success"
+//                 : "apply-leave-alert-error"
+//             }`}
+//           >
+//             {message}
+//           </div>
+//         )}
+
+//         <form onSubmit={handleSubmit} className="apply-leave-form">
+//           <div className="row">
+//             <div className="col-md-6 apply-leave-form-group">
+//               <label className="apply-leave-label">Start Date</label>
+//               <input
+//                 type="date"
+//                 name="startDate"
+//                 value={formData.startDate}
+//                 onChange={handleChange}
+//                 className="apply-leave-input"
+//                 required
+//               />
+//             </div>
+//             <div className="col-md-6 apply-leave-form-group">
+//               <label className="apply-leave-label">End Date</label>
+//               {/* <input
+//                 type="date"
+//                 name="endDate"
+//                 value={formData.endDate}
+//                 onChange={handleChange}
+//                 className="apply-leave-input"
+//                 required
+//               /> */}
+//               <input
+//                 type="date"
+//                 name="endDate"
+//                 value={formData.endDate}
+//                 onChange={handleChange}
+//                 className="apply-leave-input"
+//                 required
+//                 disabled={
+//                   formData.leaveTypes === "Saturday Off" ||
+//                   formData.leaveTypes === "Casual Leave"
+//                 }
+//               />
+//             </div>
+//           </div>
+
+//           <div className="row">
+//             <div className="col-md-6 apply-leave-form-group">
+//               <select
+//                 name="leaveTypes"
+//                 value={formData.leaveTypes}
+//                 onChange={handleChange}
+//                 className="apply-leave-select"
+//                 required
+//               >
+//                 <option value="" disabled>
+//                   Select Leave Type
+//                 </option>
+//                 {leaveTypeOptions.map(
+//                   (type) =>
+//                     (!casualLeaveUsed || type !== "Casual Leave") &&
+//                     (!saturdayOffUsed || type !== "Saturday Off") && (
+//                       <option key={type} value={type}>
+//                         {type}
+//                       </option>
+//                     )
+//                 )}
+//                 {formData.startDate &&
+//                   isSaturday(formData.startDate) &&
+//                   !saturdayOffUsed && (
+//                     <option value="Saturday Off">Saturday Off</option>
+//                   )}
+//               </select>
+//             </div>
+
+//             <div className="col-md-6 apply-leave-form-group">
+//               {formData.leaveTypes === "Permission" ? (
+//                 <select
+//                   name="leaveTimes"
+//                   value={formData.leaveTimes}
+//                   onChange={handleChange}
+//                   className="apply-leave-select"
+//                   required
+//                 >
+//                   <option value="" disabled>
+//                     Select Permission Time
+//                   </option>
+//                   {permissionOptions.map((option) => (
+//                     <option key={option} value={option}>
+//                       {option}
+//                     </option>
+//                   ))}
+//                 </select>
+//               ) : (
+//                 <select
+//                   name="leaveTimes"
+//                   value={formData.leaveTimes}
+//                   onChange={handleChange}
+//                   className="apply-leave-select"
+//                   required
+//                 >
+//                   <option value="" disabled>
+//                     Select Leave Time
+//                   </option>
+//                   {fullDayOptions.map((option) => (
+//                     <option key={option} value={option}>
+//                       {option}
+//                     </option>
+//                   ))}
+//                 </select>
+//               )}
+//             </div>
+//           </div>
+
+//           {formData.leaveTypes !== "Saturday Off" && (
+//             <div className="apply-leave-form-group">
+//               <textarea
+//                 name="reason"
+//                 placeholder="Reason for Leave"
+//                 value={formData.reason}
+//                 onChange={handleChange}
+//                 className="apply-leave-input"
+//                 required
+//               />
+//             </div>
+//           )}
+//           <div className="apply-leave-buttons">
+//             <button type="submit" className="apply-leave-btn">
+//               Apply Leave
+//             </button>
+//             <button
+//               type="button"
+//               onClick={handleCancel}
+//               className="apply-leave-btn apply-leave-cancel-btn"
+//             >
+//               Cancel
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ApplyLeave;
+
+
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ApplayLeave.css"; // Import the custom CSS
+import { useNavigate } from "react-router-dom";
 
 const ApplyLeave = () => {
-  const [formData, setFormData] = useState({
+  // const [formData, setFormData] = useState({
+  //   leaveTypes: "",
+  //   leaveTimes: "",
+  //   startDate: "",
+  //   endDate: "",
+  //   reason: "",
+  //   Employee_id: localStorage.getItem("employeeId"),
+  //   userName: localStorage.getItem("userName"),
+  // });
+  const initialFormState = {
     leaveTypes: "",
     leaveTimes: "",
     startDate: "",
@@ -222,7 +520,11 @@ const ApplyLeave = () => {
     reason: "",
     Employee_id: localStorage.getItem("employeeId"),
     userName: localStorage.getItem("userName"),
-  });
+  };
+  const navigate = useNavigate();
+
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // Track success or error
@@ -294,15 +596,28 @@ const ApplyLeave = () => {
       setMessage(response.data.message);
       setMessageType("success");
 
-      // Notify the admin about the leave request
+
+    try {
       await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
         message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
         read: false,
       });
-    } catch (error) {
-      setMessage(error.response?.data?.message || "Leave applied sucessfully");
-      setMessageType("error");
+    } catch (notificationError) {
+      console.warn("Notification failed but leave applied:", notificationError);
+      // You can optionally show a secondary message or ignore this error
     }
+   navigate("/dashboard/applayLeave");
+  } catch (error) {
+    // Handle leave submission failure
+    setMessage(error.response?.data?.message || "Leave application failed");
+    setMessageType("error");
+  }
+};
+  const handleCancel = () => {
+    setFormData(initialFormState);
+    setMessage("");
+    setMessageType("");
+    navigate("/dashboard/applayLeave");
   };
 
   return (
@@ -428,20 +743,30 @@ const ApplyLeave = () => {
             </div>
           </div>
 
-          <div className="apply-leave-form-group">
-            <textarea
-              name="reason"
-              placeholder="Reason for Leave"
-              value={formData.reason}
-              onChange={handleChange}
-              className="apply-leave-input"
-              required
-            />
+          {formData.leaveTypes !== "Saturday Off" && (
+            <div className="apply-leave-form-group">
+              <textarea
+                name="reason"
+                placeholder="Reason for Leave"
+                value={formData.reason}
+                onChange={handleChange}
+                className="apply-leave-input"
+                required
+              />
+            </div>
+          )}
+          <div className="apply-leave-buttons">
+            <button type="submit" className="apply-leave-btn">
+              Apply Leave
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="apply-leave-btn apply-leave-cancel-btn"
+            >
+              Cancel
+            </button>
           </div>
-
-          <button type="submit" className="apply-leave-btn">
-            Apply Leave
-          </button>
         </form>
       </div>
     </div>

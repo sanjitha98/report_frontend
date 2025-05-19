@@ -52,6 +52,12 @@ font-weight: bold;}
 .status.wfh {color: rgb(8, 101, 240);font-weight: bold;}
 
 
+.loading-indicator {
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+  padding: 40px;
+}
 
 
 

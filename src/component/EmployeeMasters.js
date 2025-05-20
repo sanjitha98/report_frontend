@@ -1042,7 +1042,7 @@ const EmployeeMaster = () => {
                   <table className="min-w-full text-sm text-gray-700 border border-gray-200 rounded-lg">
                     <thead className="bg-gray-100 text-xs text-gray-600 uppercase tracking-wider">
                       <tr>
-                        <th className="px-4 py-2 text-left">Leave Type</th>
+                        <th className="px-4 py-2 text-left whitespace-nowrap">Leave Type</th>
                         <th className="px-4 py-2 text-left">Status</th>
                         <th className="px-4 py-2 text-left">From</th>
                         <th className="px-4 py-2 text-left">To</th>
@@ -1397,11 +1397,11 @@ const EmployeeMaster = () => {
             <h1 className="text-lg font-semibold text-gray-800 mb-4">
               Upcoming Holidays
             </h1>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <ul className="ml-8 space-y-2 text-sm text-gray-600">
               {holidays.length > 0 ? (
                 holidays.map((holiday) => (
                   <li key={holiday.id}>
-                    <span className="font-medium">{holiday.eventName}</span> —{" "}
+                    <span className="font-medium uppercase">{holiday.eventName}</span> —{" "}
                     {formatDate(holiday.startDate)}
                   </li>
                 ))

@@ -1764,11 +1764,11 @@ const EmployeeMaster = () => {
             <h1 className="text-lg font-semibold text-gray-800 mb-4">
               Upcoming Holidays
             </h1>
-            <ul className="space-y-2 text-sm text-gray-600">
+            <ul className="ml-8 space-y-2 text-sm text-gray-600">
               {holidays.length > 0 ? (
                 holidays.map((holiday) => (
                   <li key={holiday.id}>
-                    <span className="font-medium">{holiday.eventName}</span> —{" "}
+                    <span className="font-medium uppercase">{holiday.eventName}</span> —{" "}
                     {formatDate(holiday.startDate)}
                   </li>
                 ))

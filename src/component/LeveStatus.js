@@ -288,7 +288,25 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const LeaveApplications = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+
+  const pad = (n) => n.toString().padStart(2, "0");
+
+  // First day of the month (local time)
+  const first = new Date(now.getFullYear(), now.getMonth(), 1);
+  const firstDayOfMonth = `${first.getFullYear()}-${pad(
+    first.getMonth() + 1
+  )}-${pad(first.getDate())}`;
+
+  // Last day of the month (local time)
+  const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const lastDayOfMonth = `${last.getFullYear()}-${pad(
+    last.getMonth() + 1
+  )}-${pad(last.getDate())}`;
+
+  console.log("firstDayOfMonth", firstDayOfMonth);
+  console.log("lastDayOfMonth", lastDayOfMonth);
+
   const navigate = useNavigate();
   const styles = {
     mainContainer: {
@@ -354,7 +372,7 @@ const LeaveApplications = () => {
       flexDirection: "column",
       justifyContent: "end",
       width: "20%",
-      margin:"10px"
+      margin: "10px",
     },
     input: {
       padding: "10px",
@@ -364,34 +382,34 @@ const LeaveApplications = () => {
       outline: "none",
     },
     applicationCard: {
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      padding: "14px",
+      marginBottom: "20px",
       backgroundColor: "#f9f9f9",
-      borderRadius: "12px",
-      padding: "20px",
-      marginBottom: "15px",
-      border: "1px solid #ddd",
-      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-      width: "100%",
+      fontFamily: "Arial, sans-serif",
+      fontSize: "14px",
+      lineHeight: "1.6",
     },
     applicationHeader: {
       display: "flex",
       justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "12px",
+      fontWeight: "bold",
+      fontSize: "16px",
+      marginBottom: "10px",
     },
     applicationStatus: (status) => ({
+      fontSize: "14px",
       fontWeight: "bold",
       color:
         status === "Accepted"
-          ? "#00a95a"
-          : status === "Pending"
-          ? "#FFC107"
-          : "#dc3545",
-      textTransform: "uppercase",
+          ? "green"
+          : status === "Rejected"
+          ? "red"
+          : "orange",
     }),
     leaveType: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      color: "#333",
+      fontSize: "16px",
     },
     dateText: {
       fontSize: "16px",
@@ -403,9 +421,10 @@ const LeaveApplications = () => {
       color: "#666",
     },
     reason: {
-      fontStyle: "italic",
-      color: "#777",
+      fontStyle: "bold",
       marginTop: "8px",
+      marginBottom: "8px",
+      fontSize: "14px",
     },
     deleteButton: {
       marginTop: "10px",
@@ -423,9 +442,9 @@ const LeaveApplications = () => {
       color: "#007BFF",
     },
     scrollableContent: {
+      maxHeight: "80vh",
+      overflowY: "auto",
       padding: "10px",
-      maxHeight: "400px",
-      width: "100%",
     },
     tableHeader: {
       fontWeight: "bold",
@@ -442,9 +461,13 @@ const LeaveApplications = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [leaveTypeFilter, setLeaveTypeFilter] = useState("All");
   const [loading, setLoading] = useState(false);
+  // const [formData, setFormData] = useState({
+  //   startDate: today,
+  //   endDate: today,
+  // });
   const [formData, setFormData] = useState({
-    startDate: today,
-    endDate: today,
+    startDate: firstDayOfMonth,
+    endDate: lastDayOfMonth,
   });
 
   const employeeId = localStorage.getItem("employeeId") || "A";
@@ -460,7 +483,12 @@ const LeaveApplications = () => {
           endDate: formData.endDate,
         }
       );
-      const data = response.data.data || [];
+      // const data = response.data.data || [];
+      // setLeaveApplications(data);
+      // setFilteredApplications(data);
+      const data = (response.data.data || []).sort(
+        (a, b) => new Date(b.startDate) - new Date(a.startDate)
+      );
       setLeaveApplications(data);
       setFilteredApplications(data);
     } catch (error) {
@@ -625,10 +653,10 @@ const LeaveApplications = () => {
               <div style={styles.applicationHeader}>
                 <span style={styles.leaveType}>{application.leaveTypes}</span>
                 <span style={styles.applicationStatus(application.status)}>
-                  {application.status}
+                  [{application.status.toUpperCase()}]
                 </span>
               </div>
-              <div style={styles.dateText}>
+              {/* <div style={styles.dateText}>
                 From: {formatDate(application.startDate)} To:{" "}
                 {formatDate(application.endDate)}
               </div>
@@ -637,6 +665,29 @@ const LeaveApplications = () => {
               </div>
               <div style={styles.leaveDetails}>
                 Number of Days: {application.noOfDays}
+              </div>
+              <div style={styles.reason}>Reason: {application.reason}</div>
+              {application.status === "Pending" && (
+                <button
+                  style={styles.deleteButton}
+                  onClick={() => handleDelete(application.lid)}
+                >
+                  Delete
+                </button>
+              )}
+            </div> */}
+
+              <div style={styles.textRow}>
+                <strong>From:</strong> {formatDate(application.startDate)}
+              </div>
+              <div style={styles.textRow}>
+                <strong>To:</strong> {formatDate(application.endDate)}
+              </div>
+              <div style={styles.textRow}>
+                <strong>Leave Time:</strong> {application.leaveTimes}
+              </div>
+              <div style={styles.textRow}>
+                <strong>No. of Days:</strong> {application.noOfDays}
               </div>
               <div style={styles.reason}>Reason: {application.reason}</div>
               {application.status === "Pending" && (

@@ -455,7 +455,7 @@ import { logOut } from "../Redux/slice/loginSlice";
 import ChangePassword from "./ChangePassword";
 import AddEmployee from "./AddEmployees";
 import LeveStatus from "./LeveStatus";
-import ApplayLeave from "./ApplayLeave";
+import ApplyLeave from "./ApplyLeave";
 import LeaveAcces from "./LeaveAcces";
 import EmployeeMaster from "./EmployeeMaster";
 import EmployeeMasters from "./EmployeeMasters";
@@ -807,15 +807,15 @@ const Dashboard = () => {
 
                 <li>
                   <Link
-                    to="/dashboard/applayLeave"
+                    to="/dashboard/applyLeave"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                      location.pathname === "/dashboard/applayLeave" &&
+                      location.pathname === "/dashboard/applyLeave" &&
                       "bg-gray-100"
                     }`}
                   >
                     <svg
                       className={`flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-orange-500 ${
-                        location.pathname === "/dashboard/applayLeave" &&
+                        location.pathname === "/dashboard/applyLeave" &&
                         "text-orange-500"
                       }`}
                       xmlns="http://www.w3.org/2000/svg"
@@ -1605,16 +1605,20 @@ M16 14v6"
 
                 <li>
                   <Link
-                    to="/dashboard/applayLeave"
+                    to="/dashboard/applyLeave"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
-                      location.pathname === "/dashboard/applayLeave" &&
-                      "bg-gray-100"
+                      location.pathname === "/dashboard/applyLeave" ||
+                      location.pathname === "/dashboard/leveStatus"
+                        ? "bg-gray-100"
+                        : ""
                     }`}
                   >
                     <svg
                       className={`flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-orange-500 ${
-                        location.pathname === "/dashboard/applayLeave" &&
-                        "text-orange-500"
+                        location.pathname === "/dashboard/applyLeave" ||
+                        location.pathname === "/dashboard/leveStatus"
+                          ? "text-orange-500"
+                          : ""
                       }`}
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -1638,7 +1642,7 @@ M16 14v6"
                   </Link>
                 </li>
 
-                <li>
+                {/* <li>
                   <Link
                     to="/dashboard/leveStatus"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
@@ -1665,13 +1669,13 @@ M16 14v6"
                         strokeWidth="2"
                         d="M6 8h12M6 12h8m-8 4h8m-9 5h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"
                       />{" "}
-                      {/* Clipboard/Checklist icon */}
+                     
                     </svg>
                     <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
                       Leave Status
                     </span>
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/dashboard/changePassword"
@@ -1775,15 +1779,18 @@ M16 14v6"
             <Route path="/addEmployee" element={<AddEmployee />} />
             <Route path="/changePassword" element={<ChangePassword />} />
             <Route path="/teamReport/*" element={<TeamReport />} />
-            <Route path="/applayLeave" element={<LeveStatus />} />
+            <Route path="/applyLeave" element={<LeveStatus />} />
             {/* <Route path="/applayLeave" element={<ApplayLeave />} /> */}
-            <Route path="/leveStatus" element={<ApplayLeave />} />
+            <Route path="/leveStatus" element={<ApplyLeave />} />
             <Route path="/leaveAcces" element={<LeaveAcces />} />
             <Route path="/punchReport" element={<PunchReport />} />
             <Route path="/projects" element={<ProjectList />} />
             <Route path="/projects/add" element={<ProjectForm />} />
             <Route path="/project-assign" element={<ProjectAssignForm />} />
-            <Route path="/project-assign-list" element={<ProjectAssignList />} />
+            <Route
+              path="/project-assign-list"
+              element={<ProjectAssignList />}
+            />
           </Routes>
         </div>
       </div>

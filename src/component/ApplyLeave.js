@@ -209,9 +209,6 @@
 
 // export default ApplyLeave;
 
-
-
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import "./ApplayLeave.css"; // Import the custom CSS
@@ -237,7 +234,6 @@
 //     userName: localStorage.getItem("userName"),
 //   };
 //   const navigate = useNavigate();
-
 
 //   const [formData, setFormData] = useState(initialFormState);
 
@@ -310,7 +306,6 @@
 //       );
 //       setMessage(response.data.message);
 //       setMessageType("success");
-
 
 //     try {
 //       await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
@@ -494,24 +489,12 @@
 
 // export default ApplyLeave;
 
-
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./ApplayLeave.css"; // Import the custom CSS
+import "./ApplyLeave.css";
 import { useNavigate } from "react-router-dom";
 
 const ApplyLeave = () => {
-  // const [formData, setFormData] = useState({
-  //   leaveTypes: "",
-  //   leaveTimes: "",
-  //   startDate: "",
-  //   endDate: "",
-  //   reason: "",
-  //   Employee_id: localStorage.getItem("employeeId"),
-  //   userName: localStorage.getItem("userName"),
-  // });
   const initialFormState = {
     leaveTypes: "",
     leaveTimes: "",
@@ -519,10 +502,9 @@ const ApplyLeave = () => {
     endDate: "",
     reason: "",
     Employee_id: localStorage.getItem("employeeId"),
-    userName: localStorage.getItem("userName"),
+    userName: localStorage.getItem("employeeName"),
   };
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState(initialFormState);
 
@@ -536,7 +518,8 @@ const ApplyLeave = () => {
     "Work From Home",
     "Maternity Leave",
     "Permission",
-    "Loss of Pay Leave", // Note the correction here (should read "Loss of Pay Leave")
+    "Saturday Off",
+    "Loss of Pay Leave",
   ];
 
   const fullDayOptions = ["Full day", "Half day"];
@@ -560,11 +543,6 @@ const ApplyLeave = () => {
     return selectedDate.getDay() === 6;
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -583,41 +561,91 @@ const ApplyLeave = () => {
     setFormData(updatedForm);
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setMessage("");
+
+  //   try {
+  //     // Submit leave request
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_API_URL}/applyLeave`,
+  //       formData
+  //     );
+  //     setMessage(response.data.message);
+  //     setMessageType("success");
+
+  //     try {
+  //       await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
+  //         message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
+  //         read: false,
+  //       });
+  //     } catch (notificationError) {
+  //       console.warn(
+  //         "Notification failed but leave applied:",
+  //         notificationError
+  //       );
+  //       // You can optionally show a secondary message or ignore this error
+  //     }
+  //     navigate("/dashboard/applyLeave");
+  //   } catch (error) {
+  //     // Handle leave submission failure
+  //     setMessage(error.response?.data?.message || "Leave application failed");
+  //     setMessageType("error");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setMessageType("");
 
     try {
-      // Submit leave request
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/applyLeave`,
         formData
       );
-      setMessage(response.data.message);
-      setMessageType("success");
 
+      const { status, message } = response.data;
 
-    try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
-        message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
-        read: false,
-      });
-    } catch (notificationError) {
-      console.warn("Notification failed but leave applied:", notificationError);
-      // You can optionally show a secondary message or ignore this error
+      if (status === "Success") {
+        setMessage(message);
+        setMessageType("success");
+
+        // Send notification (optional but included)
+        try {
+          await axios.post(`${process.env.REACT_APP_API_URL}/notifications`, {
+            message: `Leave applied by ${formData.userName} (ID: ${formData.Employee_id}) for ${formData.leaveTypes} from ${formData.startDate} to ${formData.endDate}. Reason: ${formData.reason}`,
+            read: false,
+          });
+        } catch (notificationError) {
+          console.warn(
+            "Notification failed but leave applied:",
+            notificationError
+          );
+        }
+
+        // Redirect after short delay (optional for UX)
+        setTimeout(() => {
+          navigate("/dashboard/applyLeave");
+        }, 1500);
+      } else if (status === "Error") {
+        setMessage(message);
+        setMessageType("error");
+      }
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message ||
+          "Leave application failed due to server error."
+      );
+      setMessageType("error");
     }
-   navigate("/dashboard/applayLeave");
-  } catch (error) {
-    // Handle leave submission failure
-    setMessage(error.response?.data?.message || "Leave application failed");
-    setMessageType("error");
-  }
-};
+  };
+
   const handleCancel = () => {
     setFormData(initialFormState);
     setMessage("");
     setMessageType("");
-    navigate("/dashboard/applayLeave");
+    navigate("/dashboard/applyLeave");
   };
 
   return (
@@ -652,14 +680,7 @@ const ApplyLeave = () => {
             </div>
             <div className="col-md-6 apply-leave-form-group">
               <label className="apply-leave-label">End Date</label>
-              {/* <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                className="apply-leave-input"
-                required
-              /> */}
+
               <input
                 type="date"
                 name="endDate"
@@ -687,15 +708,11 @@ const ApplyLeave = () => {
                 <option value="" disabled>
                   Select Leave Type
                 </option>
-                {leaveTypeOptions.map(
-                  (type) =>
-                    (!casualLeaveUsed || type !== "Casual Leave") &&
-                    (!saturdayOffUsed || type !== "Saturday Off") && (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    )
-                )}
+                {leaveTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
                 {formData.startDate &&
                   isSaturday(formData.startDate) &&
                   !saturdayOffUsed && (

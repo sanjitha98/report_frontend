@@ -574,134 +574,145 @@ const LeaveApplications = () => {
   if (loading) return <div style={styles.loading}>Loading...</div>;
 
   return (
-    <div>
-      <h1 style={styles.title}>Leave Status</h1>
-      <div className="flex justify-end mb-6">
+    <div className="p-6">
+      <h1 className="text-4xl font-bold text-center text-black mb-6">
+        Leave Status
+      </h1>
+
+      <div className="flex justify-end mb-4">
         <button
           onClick={() => navigate("/dashboard/leveStatus")}
-          className={`px-6 py-3 rounded-xl transition-all ${"bg-blue-600 text-white hover:bg-blue-700"}`}
+          className="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
         >
           Apply Leave
         </button>
       </div>
-      <form onSubmit={handleDateSubmit} style={styles.formContainer}>
-        <div style={styles.dateRangeContainer}>
-          <div style={styles.formGroup}>
-            <label>Start Date</label>
-            <input
-              type="date"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.formGroup}>
-            <label>End Date</label>
-            <input
-              type="date"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.formGroup}>
-            <label>Status</label>
-            <select
-              value={statusFilter}
-              onChange={handleStatusChange}
-              style={styles.select}
-            >
-              <option value="All">All Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Accepted">Accepted</option>
-              <option value="Rejected">Rejected</option>
-            </select>
-          </div>
-          <div style={styles.formGroup}>
-            <label>Leave Types</label>
-            <select
-              value={leaveTypeFilter}
-              onChange={handleLeaveTypeChange}
-              style={styles.select}
-            >
-              {leaveTypes.map((type, idx) => (
-                <option key={idx} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={styles.filterbtn}>
-            <button
-              type="submit"
-              className={`rounded-md bg-blue-600 text-white hover:bg-blue-700`}
-            >
-              Filter
-            </button>
-          </div>
+
+      <form
+        onSubmit={handleDateSubmit}
+        className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6"
+      >
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold">Start Date</label>
+          <input
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleChange}
+            required
+            className="border rounded-md px-3 py-2"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold">End Date</label>
+          <input
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleChange}
+            required
+            className="border rounded-md px-3 py-2"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold">Status</label>
+          <select
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="border rounded-md px-3 py-2"
+          >
+            <option value="All">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-semibold">Leave Types</label>
+          <select
+            value={leaveTypeFilter}
+            onChange={handleLeaveTypeChange}
+            className="border rounded-md px-3 py-2"
+          >
+            {leaveTypes.map((type, idx) => (
+              <option key={idx} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-end">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 w-full"
+          >
+            Filter
+          </button>
         </div>
       </form>
 
-      <div style={styles.scrollableContent}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredApplications.length > 0 ? (
           filteredApplications.map((application, index) => (
-            <div key={index} style={styles.applicationCard}>
-              <div style={styles.applicationHeader}>
-                <span style={styles.leaveType}>{application.leaveTypes}</span>
-                <span style={styles.applicationStatus(application.status)}>
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-xl shadow-md p-5"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-lg font-semibold text-gray-800">
+                  {application.leaveTypes}
+                </span>
+                <span
+                  className={`text-sm font-bold px-2 py-1 rounded ${
+                    application.status === "Accepted"
+                      ? "text-green-700 bg-green-100"
+                      : application.status === "Rejected"
+                      ? "text-red-700 bg-red-100"
+                      : "text-yellow-700 bg-yellow-100"
+                  }`}
+                >
                   [{application.status.toUpperCase()}]
                 </span>
               </div>
-              {/* <div style={styles.dateText}>
-                From: {formatDate(application.startDate)} To:{" "}
-                {formatDate(application.endDate)}
-              </div>
-              <div style={styles.leaveDetails}>
-                Leave Time: {application.leaveTimes}
-              </div>
-              <div style={styles.leaveDetails}>
-                Number of Days: {application.noOfDays}
-              </div>
-              <div style={styles.reason}>Reason: {application.reason}</div>
-              {application.status === "Pending" && (
-                <button
-                  style={styles.deleteButton}
-                  onClick={() => handleDelete(application.lid)}
-                >
-                  Delete
-                </button>
-              )}
-            </div> */}
 
-              <div style={styles.textRow}>
-                <strong>From:</strong> {formatDate(application.startDate)}
+              <div className="text-sm text-gray-700 space-y-1">
+                <p>
+                  <strong>From:</strong> {formatDate(application.startDate)}
+                </p>
+                <p>
+                  <strong>To:</strong> {formatDate(application.endDate)}
+                </p>
+                <p>
+                  <strong>Leave Time:</strong> {application.leaveTimes}
+                </p>
+                <p>
+                  <strong>No. of Days:</strong> {application.noOfDays}
+                </p>
+                <p>
+                  <strong>Reason:</strong> {application.reason}
+                </p>
               </div>
-              <div style={styles.textRow}>
-                <strong>To:</strong> {formatDate(application.endDate)}
-              </div>
-              <div style={styles.textRow}>
-                <strong>Leave Time:</strong> {application.leaveTimes}
-              </div>
-              <div style={styles.textRow}>
-                <strong>No. of Days:</strong> {application.noOfDays}
-              </div>
-              <div style={styles.reason}>Reason: {application.reason}</div>
+
               {application.status === "Pending" && (
-                <button
-                  style={styles.deleteButton}
-                  onClick={() => handleDelete(application.lid)}
-                >
-                  Delete
-                </button>
+                <div className="mt-3">
+                  <button
+                    onClick={() => handleDelete(application.lid)}
+                    className="mt-3 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
               )}
             </div>
           ))
         ) : (
-          <div>No leave applications found</div>
+          <p className="col-span-full text-center text-gray-500">
+            No leave applications found
+          </p>
         )}
       </div>
     </div>

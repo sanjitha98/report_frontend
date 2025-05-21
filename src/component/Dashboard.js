@@ -471,6 +471,9 @@ import ProjectAssignList from "./ProjectAssignList";
 const EmployeeReport = React.lazy(() =>
   import(/* webpackPrefetch: true */ "./EmployeeReport")
 );
+const RulesMaster = React.lazy(() =>
+  import(/* webpackPrefetch: true */ "./RulesMaster")
+);
 const EmployeeTask = React.lazy(() =>
   import(/* webpackPrefetch: true */ "./Tasks/Employeetask")
 );
@@ -1373,6 +1376,34 @@ M16 14v6"
                 </li>
                 <li>
                   <Link
+                    to="/dashboard/rules_form"
+                    className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                      location.pathname === "/dashboard/rules_form" &&
+                      "bg-gray-100"
+                    }`}
+                  >
+                    <svg
+                      className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-orange-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12h6M9 16h6M9 8h6M19 3H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                      />
+                    </svg>
+                    <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
+                      Rules Form
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/dashboard/changePassword"
                     className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
                       location.pathname === "/dashboard/changePassword" &&
@@ -1787,6 +1818,7 @@ M16 14v6"
             <Route path="/projects" element={<ProjectList />} />
             <Route path="/projects/add" element={<ProjectForm />} />
             <Route path="/project-assign" element={<ProjectAssignForm />} />
+            <Route path="/rules_form" element={<RulesMaster />} />
             <Route
               path="/project-assign-list"
               element={<ProjectAssignList />}

@@ -1,107 +1,100 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './RulesForm.css';
 
-const RulesMasterForm = () => {
+const RulesForm = () => {
   const [formData, setFormData] = useState({
-    morningPunchTime: "",
-    totalWorkingHours: "",
-    monthlyPermissionHours: "",
-    monthlyPermissionCount: "",
-    monthlyGraceMinutes: "",
-    graceLeaveType: "",
-    breakMinutesPerDay: "",
-    halfDayThreshold: "",
-    eveningPunchTime: "",
-    considerFirstLastPunch: false,
-    absentIfLateForDays: "",
+    morning_punch: '',
+    working_hours: '',
+    permission_hours: '',
+    permission_count: '',
+    grace_time: '',
+    late_penalty: '',
+    break_hours: '',
+    half_day_limit: '',
+    evening_punch: '',
+    task_submission: '',
+    casual_leave: '',
+    saturday_off: '',
+    sandwich_policy: '',
   });
 
+  useEffect(() => {
+    const fetchRules = async () => {
+      try {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/get_rules_form`);
+        if (res.data) {
+          setFormData(res.data);
+        }
+      } catch (error) {
+        console.error('Error fetching rules:', error);
+      }
+    };
+
+    fetchRules();
+  }, []);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Rule Data:", formData);
-    // Call your API here
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/post_rules_form`, formData);
+      alert('Rules submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting rules:', error);
+    }
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border">
-      <h2 className="text-2xl font-bold mb-6 text-center">Rules Master Form</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block mb-1 font-medium">Morning Punch (on or before)</label>
-          <input type="time" name="morningPunchTime" value={formData.morningPunchTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+    <form className="rules-form" onSubmit={handleSubmit}>
+      <h2>Rules Form</h2>
 
-        <div>
-          <label className="block mb-1 font-medium">Evening Punch (on or after)</label>
-          <input type="time" name="eveningPunchTime" value={formData.eveningPunchTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>1. Morning punch should be on or before:</label>
+      <input type="time" name="morning_punch" value={formData.morning_punch} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Total Working Hours (per day)</label>
-          <input type="number" name="totalWorkingHours" value={formData.totalWorkingHours} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>2. Total working hours per day:</label>
+      <input type="number" name="working_hours" value={formData.working_hours} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Monthly Permission Hours</label>
-          <input type="number" name="monthlyPermissionHours" value={formData.monthlyPermissionHours} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>3. Total hours of permission per month:</label>
+      <input type="number" name="permission_hours" value={formData.permission_hours} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Permission Times (per month)</label>
-          <input type="number" name="monthlyPermissionCount" value={formData.monthlyPermissionCount} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>4. Number of permission per month:</label>
+      <input type="number" name="permission_count" value={formData.permission_count} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Grace Time for Late Coming (mins/month)</label>
-          <input type="number" name="monthlyGraceMinutes" value={formData.monthlyGraceMinutes} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>5. Grace time allowed for late coming per month (in minutes):</label>
+      <input type="number" name="grace_time" value={formData.grace_time} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Exceeded Grace Considered as</label>
-          <select name="graceLeaveType" value={formData.graceLeaveType} onChange={handleChange} className="w-full border rounded px-3 py-2">
-            <option value="">Select Leave Type</option>
-            <option value="Half Day">Half Day</option>
-            <option value="Full Day">Full Day</option>
-            <option value="LOP">Loss of Pay</option>
-          </select>
-        </div>
+      <label>6. Late coming beyond grace will be considered as:</label>
+      <input type="text" name="late_penalty" value={formData.late_penalty} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Break Hours (mins/day)</label>
-          <input type="number" name="breakMinutesPerDay" value={formData.breakMinutesPerDay} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>7. Total break hours allowed per day:</label>
+      <input type="number" name="break_hours" value={formData.break_hours} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Half Day if Worked Less Than (hrs)</label>
-          <input type="number" name="halfDayThreshold" value={formData.halfDayThreshold} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>8. Half-day leave is considered if worked for less than:</label>
+      <input type="number" name="half_day_limit" value={formData.half_day_limit} onChange={handleChange} required />
 
-        <div className="col-span-1 md:col-span-2">
-          <label className="flex items-center">
-            <input type="checkbox" name="considerFirstLastPunch" checked={formData.considerFirstLastPunch} onChange={handleChange} className="mr-2" />
-            Consider 1st and Last Punch for Attendance Calculation
-          </label>
-        </div>
+      <label>9. Evening punch should be on or after:</label>
+      <input type="time" name="evening_punch" value={formData.evening_punch} onChange={handleChange} required />
 
-        <div>
-          <label className="block mb-1 font-medium">Absent If Late For (days)</label>
-          <input type="number" name="absentIfLateForDays" value={formData.absentIfLateForDays} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-        </div>
+      <label>10. Daily tasks should be submitted within (minutes after punch-in):</label>
+      <input type="number" name="task_submission" value={formData.task_submission} onChange={handleChange} required />
 
-        <div className="col-span-1 md:col-span-2 flex justify-center gap-4">
-          <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded-xl">Save</button>
-          <button type="reset" className="bg-gray-400 text-white px-6 py-2 rounded-xl">Clear</button>
-        </div>
-      </form>
-    </div>
+      <label>11. Casual leave per month:</label>
+      <input type="number" name="casual_leave" value={formData.casual_leave} onChange={handleChange} required />
+
+      <label>12. Saturday off per month:</label>
+      <input type="number" name="saturday_off" value={formData.saturday_off} onChange={handleChange} required />
+
+      <label>13. Sandwich Policy:</label>
+      <input type="text" name="sandwich_policy" value={formData.sandwich_policy} onChange={handleChange} required />
+
+      <button type="submit">Submit Rules</button>
+    </form>
   );
 };
 
-export default RulesMasterForm;
+export default RulesForm;

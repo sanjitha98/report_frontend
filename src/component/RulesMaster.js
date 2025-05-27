@@ -51,7 +51,7 @@ const RulesForm = () => {
 
   return (
     <form className="rules-form" onSubmit={handleSubmit}>
-      <h2>Rules Form</h2>
+      <h1 className="font-bold text-center text-black mb-4" style={{ fontSize: '1.5rem' }}>Rules Form</h1>
 
       <label>1. Morning punch should be on or before:</label>
       <input type="time" name="morning_punch" value={formData.morning_punch} onChange={handleChange} required />

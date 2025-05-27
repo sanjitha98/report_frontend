@@ -268,7 +268,7 @@ const EmployeeList = () => {
     <div className="bg-white-smoke min-h-screen font-poppins">
       <div className="relative p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl text-gray-700 text-center mb-6 flex-grow">Employee List</h2>
+          <h2 className="text-2xl text-black-700 text-center mb-6 flex-grow">Employee List</h2>
           <div className="ml-4">
             <button
               onClick={() => navigate("/dashboard/addEmployee")}

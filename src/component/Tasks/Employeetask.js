@@ -30,6 +30,8 @@ const AddTask = () => {
     remarks: "",
     employee_id: localStorage.getItem("employeeId"),
     employee_name: localStorage.getItem("employeeName"),
+    admin_review: "",
+    team_leader_review: "",
   });
   const isAdmin = userType === "Admin";
   const isDisabled = createdBy && createdBy === "Admin" && !isAdmin;
@@ -49,14 +51,6 @@ const AddTask = () => {
 
   const handleDateChange = (date) => {
     setTaskData({ ...taskData, date });
-  };
-
-  const handleStartTimeChange = (time) => {
-    setTaskData({ ...taskData, assigned_date: time });
-  };
-
-  const handleEndTimeChange = (time) => {
-    setTaskData({ ...taskData, deadline_date: time });
   };
 
   const handleSubmit = async (e) => {
@@ -117,6 +111,8 @@ const AddTask = () => {
             reason_for_incomplete: assignedTask.reason_for_incomplete || "",
             remarks: assignedTask.remarks || "",
             created_by: assignedTask.created_by || "",
+            team_leader_review: assignedTask.team_leader_review,
+            admin_review: assignedTask.admin_review,
           }));
           setIsProjectAssigned(true);
         } else {

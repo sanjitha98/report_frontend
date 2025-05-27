@@ -894,15 +894,7 @@ const PunchLogTable = () => {
     XLSX.writeFile(wb, "PunchLogData.xlsx");
   };
 
-  // 7. Styles
   const styles = {
-    container: { padding: "16px" },
-    row: {
-      display: "flex",
-      gap: "16px",
-      marginBottom: "16px",
-      flexWrap: "wrap",
-    },
     column: { flex: "1", minWidth: "160px" },
     label: {
       display: "block",
@@ -937,17 +929,7 @@ const PunchLogTable = () => {
     noRecords: { textAlign: "center", padding: "16px", fontSize: "16px" },
     device: { color: "blue", fontWeight: "bold", fontSize: "16px" },
     device2: { color: "orange", fontWeight: "bold", fontSize: "16px" },
-    exportButton: {
-      display: "inline-block",
-      padding: "3px 16px",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "18px",
-      textAlign: "center",
-      marginTop: "30px",
-    },
+   
     chartContainer: { width: "100%", height: 300, marginTop: "20px" },
     summary: { marginTop: "10px", fontSize: "16px" },
     early: { color: "green", fontWeight: "bold", fontSize: "16px" },
@@ -955,8 +937,10 @@ const PunchLogTable = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div className="flex justify-end">
+    <div className="container">
+       <h1 className="font-bold text-center text-black mb-4" style={{ fontSize: '1.5rem' }}>Punch Report</h1>
+       <div className="flex justify-end">
+        
         <button
           onClick={() => setShowExtraColumns(!showExtraColumns)}
           className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition "
@@ -964,29 +948,26 @@ const PunchLogTable = () => {
           {showExtraColumns ? "Hide Extra Columns" : "Show Extra Columns"}
         </button>
       </div>
-      <div style={styles.row}>
-        <div style={styles.column}>
-          <label style={styles.label}>From Date:</label>
+      <div className="filters">
+        <div className="filter-item">
+          <label>From Date:</label>
           <input
             type="date"
-            style={styles.input}
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
         </div>
-        <div style={styles.column}>
-          <label style={styles.label}>To Date:</label>
+        <div className="filter-item">
+          <label>To Date:</label>
           <input
             type="date"
-            style={styles.input}
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
           />
         </div>
-        <div style={styles.column}>
-          <label style={styles.label}>Employee Name:</label>
+        <div className="filter-item">
+          <label>Employee Name:</label>
           <select
-            style={styles.input}
             value={selectedEmployeeId}
             onChange={(e) => setSelectedEmployeeId(e.target.value)}
           >
@@ -998,10 +979,9 @@ const PunchLogTable = () => {
             ))}
           </select>
         </div>
-        <div style={styles.column}>
-          <label style={styles.label}>Punch Type:</label>
+        <div className="filter-item">
+          <label>Punch Type:</label>
           <select
-            style={styles.input}
             value={punchType}
             onChange={(e) => setPunchType(e.target.value)}
           >
@@ -1011,11 +991,10 @@ const PunchLogTable = () => {
             <option value="Late Punches">Late Punches</option>
           </select>
         </div>
-        <div onClick={handleExport} style={styles.exportButton}>
-          Export
+        <div className="exportbtn">
+          <div onClick={handleExport}>Export</div>
         </div>
       </div>
-
       {/* Late Punch Chart */}
       {punchType === "Late Punches" && selectedEmployeeId && (
         <div style={styles.chartContainer}>
@@ -1082,7 +1061,7 @@ const PunchLogTable = () => {
           ) : (
             <div className="max-h-[100vh] overflow-y-auto">
               <table className="min-w-full border-collapse border border-gray-300">
-                <thead className="sticky top-0 bg-white z-10">
+                <thead className="sticky top-0 bg-gray-200 z-20">
                   {showExtraColumns ? (
                     <tr>
                       <th className="border border-gray-300 px-3 py-2 text-left font-semibold text-sm">
@@ -1204,20 +1183,18 @@ const PunchLogTable = () => {
                               {item.date}
                             </td>
                             <td className="border text-left border-gray-300 px-3 py-2 text-sm whitespace-nowrap">
-                              {item.punchIn
-                                .slice()
-                                .reverse()
-                                .map((time) =>
-                                  new Date(time).toLocaleTimeString()
-                                )
-                                .join(", ")}
+                              {item.punchIn[1]
+                                ? new Date(item.punchIn[1]).toLocaleTimeString()
+                                : item.punchIn[0]
+                                ? new Date(item.punchIn[0]).toLocaleTimeString()
+                                : "--"}
                             </td>
                             <td className="border text-left border-gray-300 px-3 py-2 text-sm whitespace-nowrap">
-                              {item.punchOut
-                                .map((time) =>
-                                  new Date(time).toLocaleTimeString()
-                                )
-                                .join(", ")}
+                              {item.punchOut[0]
+                                ? new Date(
+                                    item.punchOut[0]
+                                  ).toLocaleTimeString()
+                                : "--"}
                             </td>
                           </>
                         )}
@@ -1239,6 +1216,65 @@ const PunchLogTable = () => {
           )}
         </>
       )}
+      <style jsx>{`
+        .exportbtn {
+          display: inline-block;
+          padding: 4px 16px;
+          background: #4caf50;
+          color: #fff;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 18px;
+          text-align: center;
+          margin-top: 25px;
+        }
+        .container {
+          padding: 16px 20px;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          font-size: 14px; /* was 13px */
+          color: #333;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+        }
+        .filters {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 20px;
+          background: #f9fafb;
+          padding: 18px 20px;
+          border-radius: 8px;
+          border: 1px solid #d1d5db;
+          box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.05);
+          justify-content: Left;
+        }
+        .filter-item {
+          display: flex;
+          flex-direction: column;
+          min-width: 180px;
+        }
+        label {
+          font-weight: 600;
+          margin-bottom: 6px;
+          color: #4b5563;
+        }
+        input[type="date"],
+        select {
+          padding: 6px 10px;
+          font-size: 14px; /* was 13px */
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          background: #fff;
+          transition: border-color 0.2s ease-in-out;
+        }
+        input[type="date"]:focus,
+        select:focus {
+          outline: none;
+          border-color: #2563eb;
+          box-shadow: 0 0 3px #93c5fd;
+        }
+      `}</style>
     </div>
   );
 };

@@ -509,25 +509,259 @@ const UpcomingCard = styled.div`
   }
 `;
 
-// const ModalOverlay = styled.div`
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background: rgba(0, 0, 0, 0.5);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
+
+// // Base font size and style applied uniformly
+// const DashboardContainer = styled.div`
+//   padding: 2rem;
+//   font-family: "Roboto", sans-serif;
+//   font-size: 14px;
+//   color: #1f2937;
+//   background-color: #f9fafb;
+//   min-height: 100vh;
 // `;
 
-// const ModalContent = styled.div`
-//   background: white;
-//   padding: 20px;
-//   border-radius: 10px;
-//   width: 300px;
-//   text-align: center;
+// const Header = styled.header`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-bottom: 2rem;
 // `;
+
+// const HeaderLeft = styled.div`
+//   h1 {
+//     font-size: 18px;
+//     font-weight: 600;
+//     margin: 0;
+//   }
+// `;
+
+// const DateTimeContainer = styled.div`
+//   color: #6b7280;
+// `;
+
+// const ContentArea = styled.div`
+//   display: grid;
+//   grid-template-columns: 2fr 1fr;
+//   gap: 2rem;
+
+//   @media (max-width: 768px) {
+//     grid-template-columns: 1fr;
+//   }
+// `;
+
+// const MainSection = styled.section`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 1.5rem;
+// `;
+
+// const SideSection = styled.aside`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 1.5rem;
+// `;
+
+// const Card = styled.div`
+//   background: #ffffff;
+//   border-radius: 8px;
+//   padding: 1.5rem;
+//   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+// `;
+
+// const WelcomeCard = styled(Card)`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// `;
+
+// const WelcomeText = styled.div`
+//   h2 {
+//     font-size: 16px;
+//     font-weight: 600;
+//     margin: 0 0 0.5rem 0;
+//   }
+
+//   p {
+//     margin: 0;
+//     color: #6b7280;
+//   }
+// `;
+
+// const QuoteText = styled.blockquote`
+//   margin-top: 1rem;
+//   padding-left: 1rem;
+//   border-left: 3px solid #10b981;
+//   color: #10b981;
+//   font-style: italic;
+// `;
+
+// const WelcomeImage = styled.img`
+//   max-width: 100px;
+//   height: auto;
+// `;
+
+// const StatsCard = styled(Card)`
+//   h3 {
+//     font-size: 16px;
+//     font-weight: 600;
+//     margin-bottom: 1rem;
+//   }
+
+//   .stats-row {
+//     display: flex;
+//     justify-content: space-between;
+//     margin-bottom: 0.75rem;
+
+//     p {
+//       margin: 0;
+//       color: #6b7280;
+//     }
+
+//     span {
+//       font-weight: 500;
+//       color: #1f2937;
+//     }
+//   }
+
+//   h4 {
+//     font-size: 14px;
+//     font-weight: 600;
+//     margin-top: 1rem;
+//     margin-bottom: 0.5rem;
+//   }
+
+//   .attendance-status div {
+//     font-size: 13px;
+//     margin-bottom: 0.5rem;
+//   }
+// `;
+
+// const TableBase = styled.table`
+//   width: 100%;
+//   border-collapse: collapse;
+
+//   th, td {
+//     padding: 0.75rem;
+//     border: 1px solid #e5e7eb;
+//     text-align: left;
+//   }
+
+//   th {
+//     background: #f3f4f6;
+//     font-weight: 600;
+//   }
+
+//   tr:nth-child(even) {
+//     background-color: #f9fafb;
+//   }
+// `;
+
+// const MissingTaskTable = styled(TableBase)``;
+// const PunchTable = styled(TableBase)``;
+
+// const LatePunchContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 1rem;
+// `;
+
+// const PieChartWrapper = styled(Card)`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   padding: 1.5rem;
+
+//   h3 {
+//     font-size: 16px;
+//     font-weight: 600;
+//     color: #1f2937;
+//     margin-bottom: 1rem;
+//     text-align: center;
+//   }
+
+//   .chart-container {
+//     width: 100%;
+//     min-height: 300px;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//   }
+// `;
+
+
+// const CalendarCard = styled(Card)`
+//   .calendar-header {
+//     display: flex;
+//     align-items: center;
+//     gap: 0.5rem;
+//     margin-bottom: 1rem;
+
+//     h3 {
+//       font-size: 16px;
+//       font-weight: 600;
+//     }
+//   }
+
+//   .calendar-date {
+//     color: #6b7280;
+//     margin-bottom: 1rem;
+//   }
+
+//   .calendar-grid {
+//     display: grid;
+//     grid-template-columns: repeat(7, 1fr);
+//     gap: 0.25rem;
+//   }
+
+//   .calendar-cell {
+//     text-align: center;
+//     padding: 0.5rem 0;
+//     background: #f3f4f6;
+//     border-radius: 4px;
+
+//     &.day-label {
+//       font-weight: 600;
+//       background: #e5e7eb;
+//     }
+
+//     &.current-day {
+//       background: #2563eb;
+//       color: white;
+//     }
+//   }
+// `;
+
+// const UpcomingCard = styled(Card)`
+//   h3 {
+//     font-size: 16px;
+//     font-weight: 600;
+//     margin-bottom: 1rem;
+//   }
+
+//   ul {
+//     margin-left: 1.25rem;
+//     color: #6b7280;
+
+//     li {
+//       margin-bottom: 0.5rem;
+//     }
+//   }
+// `;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ================= EmployeeMaster Component =================
 const EmployeeMaster = () => {
@@ -626,364 +860,7 @@ const EmployeeMaster = () => {
     fetchEmployeeList();
   }, []);
 
-  // 3. FETCH LEAVE APPLICATIONS (Attendance Status)
-  // useEffect(() => {
-  //   const fetchLeaveApplications = async () => {
-  //     const startDate = moment().format("YYYY-MM-DD");
-  //     const endDate = moment().format("YYYY-MM-DD"); // Only fetch for today
-  //     try {
-  //       const response = await axios.post(
-  //         `${process.env.REACT_APP_API_URL}/getLeaveRequestsAll`,
-  //         {
-  //           startDate: startDate,
-  //           endDate: endDate,
-  //         }
-  //       );
-
-  //       if (response.data && response.data.status === "Success") {
-  //         const leaves = response.data.data;
-  //         const enrichedLeaves = await Promise.all(
-  //           leaves.map(async (leave) => {
-  //             if (!leave.employeeName) {
-  //               try {
-  //                 const empResponse = await axios.post(
-  //                   `${process.env.REACT_APP_API_URL}/getEmployeeById/${leave.employeeId}`
-  //                 );
-  //                 return {
-  //                   ...leave,
-  //                   employeeName: empResponse.data.employeeName,
-  //                 };
-  //               } catch (err) {
-  //                 console.error("Error fetching employee details:", err);
-  //                 return leave;
-  //               }
-  //             }
-  //             return leave;
-  //           })
-  //         );
-  //         setAttendanceStatus(enrichedLeaves);
-  //         const LossOfPayLeave = enrichedLeaves.filter(
-  //           (leave) => leave.leaveTypes === "LossOfPay Leave","Casual Leave", "Permission", "Work From Home", "Saturday Off "
-  //         );
-  //         setAbsentEmployees(LossOfPayLeave);
-  //       } else {
-  //         console.error("No leave data returned from API:", response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         "Error fetching leave applications:",
-  //         error.response?.data || error.message
-  //       );
-  //     }
-  //   };
-  //   fetchLeaveApplications();
-  // }, []);
-
-  // // Calculate number of present employees by subtracting only LossOfPay leave records
-  // const presentEmployeeCount = employeeCount - absentEmployees.length;
-
-  // useEffect(() => {
-  //   const fetchLeaveApplications = async () => {
-  //     const startDate = moment().format("YYYY-MM-DD");
-  //     const endDate = moment().format("YYYY-MM-DD"); // Only fetch for today
-  //     try {
-  //       const response = await axios.post(
-  //         `${process.env.REACT_APP_API_URL}/getLeaveRequestsAll`,
-  //         { startDate, endDate }
-  //       );
-
-  //       console.log("API Response:", response.data); // Debugging
-
-  //       if (response.data && response.data.status === "Success") {
-  //         const leaves = response.data.data;
-  //         console.log("Raw Leaves Data:", leaves);
-
-  //         const enrichedLeaves = await Promise.all(
-  //           leaves.map(async (leave) => {
-  //             if (!leave.employeeName) {
-  //               try {
-  //                 const empResponse = await axios.post(
-  //                   `${process.env.REACT_APP_API_URL}/getEmployeeById/${leave.employeeId}`
-  //                 );
-  //                 return {
-  //                   ...leave,
-  //                   employeeName: empResponse.data.employeeName,
-  //                 };
-  //               } catch (err) {
-  //                 console.error("Error fetching employee details:", err);
-  //                 return leave;
-  //               }
-  //             }
-  //             return leave;
-  //           })
-  //         );
-
-  //         console.log("Enriched Leaves:", enrichedLeaves);
-  //         setAttendanceStatus(enrichedLeaves);
-
-  //         // **Fix: Consider all employees on leave as absent**
-  //         const allLeaves = enrichedLeaves.filter(
-  //           (leave) => leave.leaveTypes && leave.leaveTypes.trim() !== ""
-  //         );
-
-  //         console.log("Final Absent Employees List:", allLeaves);
-  //         setAbsentEmployees(allLeaves);
-  //       } else {
-  //         console.error("No leave data returned from API:", response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         "Error fetching leave applications:",
-  //         error.response?.data || error.message
-  //       );
-  //     }
-  //   };
-
-  //   fetchLeaveApplications();
-  // }, []);
-
-  // const [presentEmployeeCount, setPresentEmployeeCount] = useState(0);
-
-  // useEffect(() => {
-  //   console.log("Recalculating Present Employees...");
-  //   console.log("Total Employees:", employeeCount);
-  //   console.log("Total Absent Employees:", absentEmployees.length);
-
-  //   if (employeeCount > 0) {
-  //     setPresentEmployeeCount(employeeCount - absentEmployees.length);
-  //   }
-
-  //   console.log("Updated Present Employees:", presentEmployeeCount);
-  // }, [absentEmployees, employeeCount]);
-
-  //  const fetchAttendanceData = async () => {
-  //     try {
-  //       const todayDate = moment().format("YYYY-MM-DD");
-
-  //       //Get all today punched employee
-  //       const punchResponse = await axios.post(
-  //         `${process.env.REACT_APP_API_URL}/dailypunch`,
-  //         { date: todayDate }
-  //       );
-
-  //       console.log("Punch Data:", punchResponse.data);
-
-  //       let todayPunchedEmployeeCount = 0; // set default 0 fro punced employee
-  //       if (punchResponse?.data?.length > 0) {
-  //         todayPunchedEmployeeCount = new Set(
-  //           punchResponse.data
-  //             .filter((emp) => emp.logType === "In" && emp.logSno === 1)
-  //             .map((emp) => emp.employeeId)
-  //         ).size;
-  //       }
-  //       console.log("todayPunchedEmployeeCount", todayPunchedEmployeeCount);
-  //       setPresentEmployeeCount(todayPunchedEmployeeCount); // set today punched employee count
-
-  //       let appliedAbsentEmployeesCount = 0; // set default 0 for leave applied
-  //       try {
-  //         //get all applied leave based on today
-  //         const leaveResponse = await axios.post(
-  //           `${process.env.REACT_APP_API_URL}/getLeaveRequestsAll`,
-  //           { startDate: todayDate, endDate: todayDate }
-  //         );
-
-  //         console.log("leaveResponse", leaveResponse.data.data);
-
-  //         if (leaveResponse.data && leaveResponse.data.status === "Success") {
-  //           const leaves = leaveResponse.data.data;
-  //           const enrichedLeaves = await Promise.all(
-  //             leaves.map(async (leave) => {
-  //               if (!leave.employeeName) {
-  //                 try {
-  //                   const empResponse = await axios.post(
-  //                     `${process.env.REACT_APP_API_URL}/getEmployeeById/${leave.employeeId}`
-  //                   );
-  //                   return {
-  //                     ...leave,
-  //                     employeeName: empResponse.data.employeeName,
-  //                   };
-  //                 } catch (err) {
-  //                   console.error("Error fetching employee details:", err);
-  //                   return leave;
-  //                 }
-  //               }
-  //               return leave;
-  //             })
-  //           );
-  //           console.log("enrichedLeaves", enrichedLeaves);
-  //           appliedAbsentEmployeesCount = enrichedLeaves.filter(
-  //             (leave) =>
-  //               leave.leaveTypes === "LossOfPay Leave" ||
-  //               "Casual Leave" ||
-  //               "Work From Home" ||
-  //               "Saturday Off " ||
-  //               "Absent"
-  //           ).length;
-
-  //         } else {
-  //           console.error("No leave data returned from API:", leaveResponse.data);
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-
-  //       const totalEmployees = employeeList.length;
-  //       const totalAbsent =
-  //         todayPunchedEmployeeCount - appliedAbsentEmployeesCount;
-  //       setAbsentEmployees(totalEmployees - totalAbsent);
-
-  //     } catch (error) {
-  //       console.error(
-  //         "Error fetching attendance data:",
-  //         error.response?.data || error.message
-  //       );
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     fetchAttendanceData();
-  //   }, [employeeList]);
-
-  // const [leaveData, setLeaveData] = useState([]); // Store leave details
-
-  // const fetchAttendanceData = async () => {
-  //   try {
-  //     const todayDate = moment().format("YYYY-MM-DD");
-
-  //     // Get all today punched employees
-  //     const punchResponse = await axios.post(
-  //       `${process.env.REACT_APP_API_URL}/dailypunch`,
-  //       { date: todayDate }
-  //     );
-
-  //     console.log("Punch Response:", punchResponse.data); // Debug log
-
-  //     let todayPunchedEmployeeCount = 0;
-  //     let punchedEmployeeIds = new Set();
-
-  //     if (punchResponse?.data?.length > 0) {
-  //       punchedEmployeeIds = new Set(
-  //         punchResponse.data
-  //           .filter((emp) => emp.logType === "In" && emp.logSno === 1)
-  //           .map((emp) => emp.employeeId)
-  //       );
-  //       todayPunchedEmployeeCount = punchedEmployeeIds.size;
-  //     }
-
-  //     setPresentEmployeeCount(todayPunchedEmployeeCount);
-  //     console.log("Punched Employee IDs:", punchedEmployeeIds); // Debug
-  //   console.log("Present Employees:", todayPunchedEmployeeCount); // Debug
-
-  //     let appliedAbsentEmployeesCount = 0;
-  //     let leaveDetails = [];
-
-  //     try {
-  //       // Get all applied leaves based on today
-  //       const leaveResponse = await axios.post(
-  //         `${process.env.REACT_APP_API_URL}/getLeaveRequestsAll`,
-  //         { startDate: todayDate, endDate: todayDate }
-  //       );
-
-  //       console.log("Leave Response:", leaveResponse.data); // Debug log
-
-  //       if (leaveResponse.data && leaveResponse.data.status === "Success") {
-  //         const leaves = leaveResponse.data.data;
-
-  //         if (!leaves || leaves.length === 0) {
-  //           console.warn("No leave data found");
-  //         }
-
-  //         const enrichedLeaves = await Promise.all(
-  //           leaves.map(async (leave) => {
-  //             if (!leave.employeeName) {
-  //               try {
-  //                 const empResponse = await axios.post(
-  //                   `${process.env.REACT_APP_API_URL}/getEmployeeById/${leave.employeeId}`
-  //                 );
-  //                 return {
-  //                   ...leave,
-  //                   employeeName: empResponse.data.employeeName,
-  //                 };
-  //               } catch (err) {
-  //                 console.error("Error fetching employee details:", err);
-  //                 return leave;
-  //               }
-  //             }
-  //             return leave;
-  //           })
-  //         );
-
-  //         // Store employee name and leave type in an array
-  //         leaveDetails = enrichedLeaves.map((leave) => ({
-  //           employeeName: leave.employeeName,
-  //           leaveTypes: leave.leaveTypes || "Absent", // If no leave type, mark as "Absent"
-  //         }));
-
-  //         console.log("Processed Leave Data:", leaveDetails); // Debug log
-  //         console.log("Leave Details:", leaveDetails); // Debug
-  //         // const appliedAbsentEmployeesCount = 2;
-  //         appliedAbsentEmployeesCount = enrichedLeaves.filter((leave) => {
-
-  //           if (leave.leaveTypes === "Permission") {
-  //             return leave.duration && leave.duration > 2; // Ignore permission as absent
-  //           } else {
-  //             return [
-  //               "LossOfPay Leave",
-  //               "Casual Leave",
-  //               "Work From Home",
-  //               "Saturday Off ",
-  //             ].includes(leave.leaveTypes);
-  //           }
-  //         }).length;
-  //         console.log("Applied Absent Employees Count:", appliedAbsentEmployeesCount); // Add this line
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching leave data:", error);
-  //     }
-  //     // Find employees who didn't punch in and are NOT on leave
-  //     const absentWithoutLeave = employeeList.filter(
-  //       (emp) =>
-  //         !punchedEmployeeIds.has(emp.employeeId) &&
-  //         !leaveDetails.some((leave) => leave.employeeName === emp.employeeName)
-  //     );
-
-  //     //  Add missing employees as "Absent"
-  //     absentWithoutLeave.forEach((emp) => {
-  //       leaveDetails.push({
-  //         employeeName: emp.employeeName,
-  //         leaveTypes: "Absent",
-  //       });
-  //     });
-
-  //     const totalEmployees = employeeList.length;
-  //     const totalAbsentWithoutLeaves =
-  //       totalEmployees - todayPunchedEmployeeCount;
-  //     const actualAbsent =
-  //       totalAbsentWithoutLeaves + appliedAbsentEmployeesCount;
-  //       console.log("Actual Absent:", actualAbsent);
-  //     setAbsentEmployees(actualAbsent);
-  //     setLeaveData(leaveDetails); // Store employee names & leave types
-
-  //     console.log("Employee List:", employeeList); // Debug
-  //     console.log("Total Absent Without Leaves:", totalAbsentWithoutLeaves); // Debug
-  //     console.log("Actual Absent:", actualAbsent); // Debug
-
-  //   } catch (error) {
-  //     console.error(
-  //       "Error fetching attendance data:",
-  //       error.response?.data || error.message
-  //     );
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAttendanceData();
-  // }, [employeeList]);
-
-  // //  Add this useEffect to log leaveData changes
-  // useEffect(() => {
-  //   console.log("Updated Leave Data:", leaveData);
-  // }, [leaveData]);
+ 
 
   const [leaveData, setLeaveData] = useState([]); // Store leave details
 
@@ -1793,3 +1670,4 @@ const EmployeeMaster = () => {
 };
 
 export default EmployeeMaster;
+

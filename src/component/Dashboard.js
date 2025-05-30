@@ -684,11 +684,10 @@ M16 14v6"
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M12 11c2.209 0 4-1.791 4-4s-1.791-4-4-4-4 1.791-4 4 1.791 4 4 4z
-M4 17c0-1.657 1.343-3 3-3h10c1.657 0 3 1.343 3 3v1c0 .552-.448 1-1 1H5c-.552 0-1-.448-1-1v-1z
-M16 14v6"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                       />
                     </svg>
+
                     <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
                       Reports
                     </span>
@@ -845,9 +844,10 @@ M16 14v6"
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              d="M9 12h6M9 16h6M9 8h6M19 3H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
+
                           <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
                             LateReport
                           </span>
@@ -984,9 +984,10 @@ M16 14v6"
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M9 12h6M9 16h6M9 8h6M19 3H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 11l1 1 3-3M9 15l1 1 3-3"
                       />
                     </svg>
+
                     <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
                       Rules Form
                     </span>

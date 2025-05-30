@@ -434,7 +434,7 @@ const ProjectAssignForm = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto rounded-2xl p-8">
+      <div className=" mx-auto rounded-2xl p-8">
         <h1 className="font-bold text-center text-black text-lg mb-4">
           {isAdmin ? "Project Assign" : "Assign Task"}
         </h1>

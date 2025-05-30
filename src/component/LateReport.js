@@ -278,7 +278,6 @@
 
 // export default LatePunchReport;
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
@@ -297,6 +296,8 @@ import moment from "moment";
 
 const LatePunchReport = () => {
   const [data, setData] = useState([]);
+  const [graphData, setGraphData] = useState([]);
+
   const [employees, setEmployees] = useState([]);
   const [filters, setFilters] = useState({
     fromDate: moment().format("YYYY-MM-DD"),
@@ -354,6 +355,25 @@ const LatePunchReport = () => {
       console.error("Error fetching employees:", err);
     }
   };
+  const fetchGraphData = async () => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/get_late_punch`,
+      {
+        fromDate: filters.fromDate,
+        toDate: filters.toDate,
+        employeeId: filters.employeeId,
+        page: 1,
+        limit: 1000, // large enough chunk for graph
+      }
+    );
+
+    setGraphData(res.data.data || []);
+  } catch (err) {
+    console.error("Error fetching graph data:", err);
+  }
+};
+
 
   const fetchData = async () => {
     try {
@@ -383,6 +403,8 @@ const LatePunchReport = () => {
           totalLateBy: r.totalLateBy,
         };
       });
+      console.log("summaryObj", summaryObj);
+
       setSummaryMap(summaryObj);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -410,6 +432,7 @@ const LatePunchReport = () => {
   const handleSearch = () => {
     setPagination((prev) => ({ ...prev, page: 1 }));
     fetchData();
+     fetchGraphData(); 
   };
 
   const exportToExcel = () => {
@@ -443,7 +466,7 @@ const LatePunchReport = () => {
   if (filters.employeeId) {
     // Only prepare chart data if a specific employee is selected
     const dateMap = {};
-    data.forEach((item) => {
+    graphData.forEach((item) => {
       const dateKey = moment(item.punchDate).format("DD/MM/YYYY");
       if (!dateMap[dateKey]) {
         dateMap[dateKey] = 0;
@@ -466,17 +489,26 @@ const LatePunchReport = () => {
   // If filters.employeeId is empty (All selected), chartData stays empty → graph shows nothing
 
   // Calculate total days late and total late minutes for summary below graph
-  const totalDaysLate = Object.keys(
-    data.reduce((acc, item) => {
-      const dateKey = moment(item.punchDate).format("DD/MM/YYYY");
-      acc[dateKey] = true;
-      return acc;
-    }, {})
-  ).length;
+  // const totalDaysLate = Object.keys(
+  //   data.reduce((acc, item) => {
+  //     const dateKey = moment(item.punchDate).format("DD/MM/YYYY");
+  //     acc[dateKey] = true;
+  //     return acc;
+  //   }, {})
+  // ).length;
 
-  const totalLateMinutes = data.reduce((sum, item) => {
-    return sum + lateByToMinutes(item.lateBy);
-  }, 0);
+  // const totalLateMinutes = data.reduce((sum, item) => {
+  //   return sum + lateByToMinutes(item.lateBy);
+  // }, 0);
+
+  const totalDaysLate = selectedEmpSummary?.count || 0;
+
+  const [hours = 0, minutes = 0, seconds = 0] = (
+    selectedEmpSummary?.totalLateBy || "00:00:00"
+  )
+    .split(":")
+    .map(Number);
+  const totalLateMinutes = hours * 60 + minutes + seconds / 60;
 
   return (
     <div className="p-4 bg-white rounded-xl shadow-md font-sans text-sm">
@@ -675,3 +707,5 @@ const LatePunchReport = () => {
 };
 
 export default LatePunchReport;
+
+

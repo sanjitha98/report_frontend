@@ -1390,7 +1390,7 @@ M16 14v6"
               </div>
             </li>
           </ul>
-          <div className="flex items-center absolute bottom-0 mb-3 pl-4 pr-14 py-2 border-t border-indigo-150 rounded-md">
+          <div className="flex items-center bottom-0 mb-3 pl-4 pr-14 py-2 border-t border-indigo-150 rounded-md">
             <div className="flex-shrink-0">
               <img
                 alt="profile pic"

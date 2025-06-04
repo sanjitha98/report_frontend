@@ -370,7 +370,7 @@ const { isAuth, userData } = useSelector((state) => state.login);
                                                       0
                                                     )}
                                                   >
-                                                    {createdAt}
+                                                    {dateItem.reportTime}
                                                   </td>
                                                   {/* Employee Name */}
                                                   <td
@@ -592,10 +592,10 @@ const { isAuth, userData } = useSelector((state) => state.login);
                                           0
                                         )}
                                       >
-                                        {detailItem.created_at
-                                          ? moment(
-                                              detailItem.created_at
-                                            ).format("HH:mm A")
+                                        {dateItem.reportTime
+                                          ? 
+                                              dateItem.reportTime
+                                           
                                           : "N/A"}
                                       </td>
                                     </>

@@ -110,17 +110,21 @@
 //     graceTimeLate: '',
 //     considerFirstLastPunch: false,
 //     calculateHalfDayMins: '',
+//     calculateHalfDayOption: '',
 //     calculateAbsentMins: '',
+//     calculateAbsentOption: '',
 //     deductBreakFromWork: false,
 //     absentWhenLateForDays: '',
-//     weeklyOffHolidayAbsent: '',
+//     absentLateOption: '',
+//     weeklyOffPrefixAbsent: false,
+//     weeklyOffSuffixAbsent: false,
+//     weeklyOffBothAbsent: false,
 //     totalPermissionHoursPerMonth: '',
 //     noOfPermissionsPerMonth: '',
 //     breakHoursPerDay: '',
 //     casualOrPaidLeavePerMonth: '',
 //     saturdayOffPerMonth: '',
 //     dailyTaskSubmitMins: '',
-//     lateMoreThanDays: '',
 //   });
 
 //   const handleChange = (e) => {
@@ -134,28 +138,38 @@
 //   const handleSubmit = (e) => {
 //     e.preventDefault();
 //     console.log('Form submitted:', formData);
-//     // Add API logic here
+//     // API logic goes here
 //   };
 
-//   const numericFields = [
-//     { label: 'Total Working Hours per Day', name: 'workingHoursPerDay', unit: 'hrs' },
-//     { label: 'Grace Time for Late', name: 'graceTimeLate', unit: 'mins' },
-//     { label: 'Consider as Half Day if total working time is', name: 'calculateHalfDayMins', unit: 'mins' },
-//     { label: 'Calculate Absent worked in less than', name: 'calculateAbsentMins', unit: 'mins' },
-//     { label: 'Absent when late for more than', name: 'absentWhenLateForDays', unit: 'days' },
-//     { label: 'Total Hours of Permission per Month', name: 'totalPermissionHoursPerMonth', unit: 'mins' },
-//     { label: 'No. of Permission per Month', name: 'noOfPermissionsPerMonth', unit: 'times' },
-//     { label: 'Total Break Hours Allowed per Day', name: 'breakHoursPerDay', unit: 'mins' },
-//     { label: 'Casual or Paid Leave per Month', name: 'casualOrPaidLeavePerMonth', unit: 'days' },
-//     { label: 'Saturday Offs per Month', name: 'saturdayOffPerMonth', unit: 'days' },
-//     { label: 'Daily Tasks should be submitted within', name: 'dailyTaskSubmitMins', unit: 'mins after punch-in' },
-//     { label: 'Late for more than', name: 'lateMoreThanDays', unit: 'days (consider as 1 leave)' },
-//   ];
-
 //   const checkboxFields = [
-//     { label: 'Consider 1st & Last Punch at Calculation', name: 'considerFirstLastPunch' },
+//     { label: 'Consider 1st & Last Punch att Calculation', name: 'considerFirstLastPunch' },
 //     { label: 'Deduct Break Hours from Work Duration', name: 'deductBreakFromWork' },
 //   ];
+
+//   const dropdownOptions = (
+//     <>
+//       <option value="" disabled>Select Type</option>
+//       <option value="halfday">Half Day LOP</option>
+//       <option value="fullday">Full Day LOP</option>
+      
+//     </>
+//   );
+//   // Utility to generate times in 30-minute intervals from 12:00 AM to 11:30 PM
+// const generateTimeOptions = () => {
+//   const times = [];
+//   for (let hour = 0; hour < 24; hour++) {
+//     for (let min = 0; min < 60; min += 30) {
+//       const period = hour < 12 ? 'AM' : 'PM';
+//       const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+//       const minStr = min === 0 ? '00' : min;
+//       times.push(`${hour12}:${minStr} ${period}`);
+//     }
+//   }
+//   return times;
+// };
+
+// const timeOptions = generateTimeOptions();
+
 
 //   return (
 //     <form
@@ -167,140 +181,322 @@
 //         Rules Master
 //       </h2>
 
-//       {/* Punch Time Settings */}
+//       {/* Time Inputs */}
 //       <section className="grid gap-6 md:grid-cols-2">
 //         <div>
-//           <label htmlFor="morningPunchBefore" className="block text-gray-700 font-semibold mb-2">
-//             1. Morning Punch should be on or before
+//           <label className="block font-semibold text-gray-700 mb-2">
+//            1.Morning Punch should be on or before
 //           </label>
 //           <input
 //             type="time"
-//             id="morningPunchBefore"
 //             name="morningPunchBefore"
 //             value={formData.morningPunchBefore}
 //             onChange={handleChange}
-//             className="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//             className="w-full border rounded px-4 py-3"
 //           />
 //         </div>
 
 //         <div>
-//           <label htmlFor="eveningPunchAfter" className="block text-gray-700 font-semibold mb-2">
-//             2. Evening Punch should be on or after
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             2.Evening Punch should be on or after
 //           </label>
 //           <input
 //             type="time"
-//             id="eveningPunchAfter"
 //             name="eveningPunchAfter"
 //             value={formData.eveningPunchAfter}
 //             onChange={handleChange}
-//             className="w-full rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//             className="w-full border rounded px-4 py-3"
 //           />
 //         </div>
 //       </section>
 
 //       {/* Numeric Inputs */}
 //       <section className="grid gap-6 md:grid-cols-2">
-//         {numericFields.map(({ label, name, unit }) => (
-//           <div key={name}>
-//             <label htmlFor={name} className="block text-gray-700 font-semibold mb-2">
-//               {label}
-//             </label>
-//             <div className="flex items-center gap-3">
-//               <input
-//                 type="number"
-//                 id={name}
-//                 name={name}
-//                 min="0"
-//                 value={formData[name]}
-//                 onChange={handleChange}
-//                 className="flex-grow rounded-md border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-//                 placeholder="Enter value"
-//               />
-//               <span className="text-gray-500 whitespace-nowrap">{unit}</span>
-//             </div>
+//         {/* Working Hours */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             3.Total Working Hours per Day
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="workingHoursPerDay"
+//               value={formData.workingHoursPerDay}
+//               onChange={handleChange}
+//               className="w-full border rounded px-4 py-3"
+//               placeholder="Enter hours"
+//             />
+//             <span>hrs</span>
 //           </div>
-//         ))}
+//         </div>
+
+//         {/* Grace Time Late */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//            4.Grace Time for Late
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="graceTimeLate"
+//               value={formData.graceTimeLate}
+//               onChange={handleChange}
+//               className="w-full border rounded px-4 py-3"
+//               placeholder="Enter minutes"
+//             />
+//             <span>mins</span>
+//           </div>
+//         </div>
+
+//         {/* Absent when Late more than X Days */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//            5.When late for more than
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="absentWhenLateForDays"
+//               value={formData.absentWhenLateForDays}
+//               onChange={handleChange}
+//               className="w-1/2 border rounded px-4 py-3"
+//               placeholder="Days"
+//             />
+//             <select
+//               name="absentLateOption"
+//               value={formData.absentLateOption}
+//               onChange={handleChange}
+//               className="w-1/2 border rounded px-4 py-3"
+//             >
+//               {dropdownOptions}
+//             </select>
+//           </div>
+//         </div>
+
+//         {/* Half Day Rule */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             6.Consider as Half Day if total working time is
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="calculateHalfDayMins"
+//               value={formData.calculateHalfDayMins}
+//               onChange={handleChange}
+//               className="w-1/2 border rounded px-4 py-3"
+//               placeholder="Minutes"
+//             />
+//             </div>
+//         </div>
+
+//         {/* Absent Rule */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             7.Calculate Leave worked in less than per Day
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="calculateAbsentMins"
+//               value={formData.calculateAbsentMins}
+//               onChange={handleChange}
+//               className="w-1/2 border rounded px-4 py-3"
+//               placeholder="Minutes"
+//             />
+//             <select
+//               name="calculateAbsentOption"
+//               value={formData.calculateAbsentOption}
+//               onChange={handleChange}
+//               className="w-1/2 border rounded px-4 py-3"
+//             >
+//               {dropdownOptions}
+//             </select>
+//           </div>
+//         </div>
+
+        
+
+//         {/* Total Permission Hours */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             8.Total Hours of Permission per Month
+//           </label>
+//           <input
+//             type="number"
+//             name="totalPermissionHoursPerMonth"
+//             value={formData.totalPermissionHoursPerMonth}
+//             onChange={handleChange}
+//             className="w-full border rounded px-4 py-3"
+//           />
+//         </div>
+
+//         {/* No. of Permission */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             9.No. of Permissions per Month
+//           </label>
+//           <input
+//             type="number"
+//             name="noOfPermissionsPerMonth"
+//             value={formData.noOfPermissionsPerMonth}
+//             onChange={handleChange}
+//             className="w-full border rounded px-4 py-3"
+//           />
+//         </div>
+
+//         {/* Break Hours */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             10.Total Break Hours Allowed per Day
+//           </label>
+//           <input
+//             type="number"
+//             name="breakHoursPerDay"
+//             value={formData.breakHoursPerDay}
+//             onChange={handleChange}
+//             className="w-full border rounded px-4 py-3"
+//           />
+//         </div>
+
+//         {/* Casual Leave */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             11.Casual Leave allowed per Month
+//           </label>
+//           <input
+//             type="number"
+//             name="casualOrPaidLeavePerMonth"
+//             value={formData.casualOrPaidLeavePerMonth}
+//             onChange={handleChange}
+//             className="w-full border rounded px-4 py-3"
+//           />
+//         </div>
+
+//         {/* Saturday Offs */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//             12.Saturday Off allowed per Month
+//           </label>
+//           <input
+//             type="number"
+//             name="saturdayOffPerMonth"
+//             value={formData.saturdayOffPerMonth}
+//             onChange={handleChange}
+//             className="w-full border rounded px-4 py-3"
+//           />
+//         </div>
+
+//         {/* Daily Task Submission */}
+//         <div>
+//           <label className="block font-semibold text-gray-700 mb-2">
+//            13.Daily task should be submitted after punch-in
+//           </label>
+//           <div className="flex gap-3 items-center">
+//             <input
+//               type="number"
+//               name="dailyTaskSubmitMins"
+//               value={formData.dailyTaskSubmitMins}
+//               onChange={handleChange}
+//               className="w-full border rounded px-4 py-3"
+//             />
+//             <span>mins</span>
+//           </div>
+//         </div>
+
 //       </section>
 
-//       {/* Checkbox Options */}
-//       <section className="grid gap-4 md:grid-cols-2">
-//         {checkboxFields.map(({ label, name }) => (
-//           <label
-//             key={name}
-//             htmlFor={name}
-//             className="flex items-center gap-3 cursor-pointer select-none"
-//           >
+    
+
+//       {/* Weekly Off and Holiday Absent Rule - Changed to 3 Checkboxes */}
+//       <section>
+//         <label className="block font-semibold text-gray-700 mb-2">
+//           14.Mark Weekly Off & Holidays as Absent if:
+//         </label>
+//         <div className="flex flex-col gap-2">
+//           <label className="flex items-center gap-3">
 //             <input
 //               type="checkbox"
-//               id={name}
+//               name="weeklyOffPrefixAbsent"
+//               checked={formData.weeklyOffPrefixAbsent}
+//               onChange={handleChange}
+//               className="h-5 w-5 text-blue-600 border-gray-300"
+//             />
+//             <span>Prefix Day Absent</span>
+//           </label>
+//           <label className="flex items-center gap-3">
+//             <input
+//               type="checkbox"
+//               name="weeklyOffSuffixAbsent"
+//               checked={formData.weeklyOffSuffixAbsent}
+//               onChange={handleChange}
+//               className="h-5 w-5 text-blue-600 border-gray-300"
+//             />
+//             <span>Suffix Day Absent</span>
+//           </label>
+//           <label className="flex items-center gap-3">
+//             <input
+//               type="checkbox"
+//               name="weeklyOffBothAbsent"
+//               checked={formData.weeklyOffBothAbsent}
+//               onChange={handleChange}
+//               className="h-5 w-5 text-blue-600 border-gray-300"
+//             />
+//             <span>Both Day Absent</span>
+//           </label>
+//         </div>
+//       </section>
+//   {/* Checkbox Fields */}
+//       <section className="grid gap-4 md:grid-cols-2">
+//         {checkboxFields.map(({ label, name }) => (
+//           <label key={name} className="flex items-center gap-3">
+//             <input
+//               type="checkbox"
 //               name={name}
 //               checked={formData[name]}
 //               onChange={handleChange}
-//               className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+//               className="h-5 w-5 text-blue-600 border-gray-300"
 //             />
-//             <span className="text-gray-700 font-medium">{label}</span>
+//             <span>{label}</span>
 //           </label>
 //         ))}
 //       </section>
-
-//       {/* Dropdown Select */}
-//       <section>
-//         <label
-//           htmlFor="weeklyOffHolidayAbsent"
-//           className="block text-gray-700 font-semibold mb-2"
-//         >
-//           9. Mark Weekly Off & Holidays as Absent if:
-//         </label>
-//         <select
-//           id="weeklyOffHolidayAbsent"
-//           name="weeklyOffHolidayAbsent"
-//           value={formData.weeklyOffHolidayAbsent}
-//           onChange={handleChange}
-//           className="w-full rounded-md border border-gray-300 px-4 py-3 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-//         >
-//           <option value="" disabled>
-//             Select Option
-//           </option>
-//           <option value="prefix">Prefix Day Absent</option>
-//           <option value="suffix">Suffix Day Absent</option>
-//           <option value="both">Both Days Absent</option>
-//         </select>
-//       </section>
-
 //       {/* Buttons */}
-//       <section className="flex justify-end gap-4 border-t pt-5">
+//       <section className="flex justify-end gap-4 pt-4 border-t">
 //         <button
-//           type="reset"
-//           onClick={() =>
-//             setFormData({
-//               morningPunchBefore: '',
-//               eveningPunchAfter: '',
-//               workingHoursPerDay: '',
-//               graceTimeLate: '',
-//               considerFirstLastPunch: false,
-//               calculateHalfDayMins: '',
-//               calculateAbsentMins: '',
-//               deductBreakFromWork: false,
-//               absentWhenLateForDays: '',
-//               weeklyOffHolidayAbsent: '',
-//               totalPermissionHoursPerMonth: '',
-//               noOfPermissionsPerMonth: '',
-//               breakHoursPerDay: '',
-//               casualOrPaidLeavePerMonth: '',
-//               saturdayOffPerMonth: '',
-//               dailyTaskSubmitMins: '',
-//               lateMoreThanDays: '',
-//             })
-//           }
-//           className="rounded-md bg-gray-500 px-6 py-3 text-white font-semibold hover:bg-gray-600 transition"
+//           type="cancel"
+//           onClick={() => setFormData({
+//             morningPunchBefore: '',
+//             eveningPunchAfter: '',
+//             workingHoursPerDay: '',
+//             graceTimeLate: '',
+//             considerFirstLastPunch: false,
+//             calculateHalfDayMins: '',
+//             calculateHalfDayOption: '',
+//             calculateAbsentMins: '',
+//             calculateAbsentOption: '',
+//             deductBreakFromWork: false,
+//             absentWhenLateForDays: '',
+//             absentLateOption: '',
+//             weeklyOffPrefixAbsent: false,
+//             weeklyOffSuffixAbsent: false,
+//             weeklyOffBothAbsent: false,
+//             totalPermissionHoursPerMonth: '',
+//             noOfPermissionsPerMonth: '',
+//             breakHoursPerDay: '',
+//             casualOrPaidLeavePerMonth: '',
+//             saturdayOffPerMonth: '',
+//             dailyTaskSubmitMins: '',
+//           })}
+//           className="px-8 py-3 font-semibold rounded border border-gray-300 hover:bg-gray-100"
 //         >
-//           Reset
+//           Cancel
 //         </button>
 //         <button
 //           type="submit"
-//           className="rounded-md bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition"
+//           className="px-8 py-3 font-semibold rounded bg-blue-600 text-white hover:bg-blue-700"
 //         >
-//           Save
+//           Submit
 //         </button>
 //       </section>
 //     </form>
@@ -308,7 +504,10 @@
 // };
 
 // export default RulesForm;
-import React, { useState } from 'react';
+
+import React, { useState,useEffect} from 'react';
+import './RulesForm.css';
+import axios from 'axios'; 
 
 const RulesForm = () => {
   const [formData, setFormData] = useState({
@@ -334,381 +533,257 @@ const RulesForm = () => {
     saturdayOffPerMonth: '',
     dailyTaskSubmitMins: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  const HOUR_FIELDS = ['workingHoursPerDay', 'breakHoursPerDay', 'totalPermissionHoursPerMonth'];
+   
+
+
+  useEffect(() => {
+    const fetchRules = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.post(`${API_URL}/get_save_rules`);
+        if (response.data) {
+          // Assuming the API returns an object matching formData keys
+          setFormData(response.data);
+        }
+      } catch (err) {
+        setError('Failed to load rules. Please try again.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRules();
+  }, [API_URL]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Validation logic
+    let newValue = value;
+
+    // Apply numeric validations
+    if (type === 'number') {
+      const num = parseFloat(value);
+      if (num < 0) return; // Prevent negative input
+
+      if (HOUR_FIELDS.includes(name) && num > 24) return; // Prevent hours > 24
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : newValue,
     }));
   };
 
-  const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // API logic goes here
+    setError(null);
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${API_URL}/post_save_rules`, formData);
+      if (response.status === 200) {
+        alert('Rules saved successfully!');
+      } else {
+        alert('Failed to save rules.');
+      }
+    } catch (err) {
+      setError('Error saving rules. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const checkboxFields = [
-    { label: 'Consider 1st & Last Punch att Calculation', name: 'considerFirstLastPunch' },
-    { label: 'Deduct Break Hours from Work Duration', name: 'deductBreakFromWork' },
-  ];
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
+
 
   const dropdownOptions = (
     <>
-      <option value="" disabled>Select Type</option>
+      <option value="">Select Type</option>
       <option value="halfday">Half Day LOP</option>
       <option value="fullday">Full Day LOP</option>
-      <option value="absent">Absent</option>
     </>
   );
-  // Utility to generate times in 30-minute intervals from 12:00 AM to 11:30 PM
-const generateTimeOptions = () => {
-  const times = [];
-  for (let hour = 0; hour < 24; hour++) {
-    for (let min = 0; min < 60; min += 30) {
-      const period = hour < 12 ? 'AM' : 'PM';
-      const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-      const minStr = min === 0 ? '00' : min;
-      times.push(`${hour12}:${minStr} ${period}`);
-    }
-  }
-  return times;
-};
-
-const timeOptions = generateTimeOptions();
-
+  
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto p-8 bg-white rounded-xl shadow-lg space-y-8"
-      noValidate
-    >
-      <h2 className="text-4xl font-bold text-gray-800 border-b pb-3 mb-6">
-        Rules Master
-      </h2>
+    <form onSubmit={handleSubmit} className="mx-auto p-8 bg-white rounded-xl shadow-lg space-y-8" noValidate>
+      <h2 className="text-2xl font-bold text-gray-800 border-b pb-3 mb-6">Rules Master</h2>
 
-      {/* Time Inputs */}
       <section className="grid gap-6 md:grid-cols-2">
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-           1.Morning Punch should be on or before
-          </label>
-          <input
-            type="time"
-            name="morningPunchBefore"
-            value={formData.morningPunchBefore}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">1. Morning Punch should be on or before</label>
+          <input type="time" name="morningPunchBefore" value={formData.morningPunchBefore} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            2.Evening Punch should be on or after
-          </label>
-          <input
-            type="time"
-            name="eveningPunchAfter"
-            value={formData.eveningPunchAfter}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">2. Evening Punch should be on or after</label>
+          <input type="time" name="eveningPunchAfter" value={formData.eveningPunchAfter} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
       </section>
 
-      {/* Numeric Inputs */}
       <section className="grid gap-6 md:grid-cols-2">
-        {/* Working Hours */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            3.Total Working Hours per Day
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2">3. Total Working Hours per Day (in hours)</label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="workingHoursPerDay"
-              value={formData.workingHoursPerDay}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-3"
-              placeholder="Enter hours"
-            />
-            <span>hrs</span>
+            <input type="number" name="workingHoursPerDay" value={formData.workingHoursPerDay} onChange={handleChange} className="w-full border rounded px-4 py-3" placeholder="Enter hours" />
+            {/* <span>hrs</span> */}
           </div>
         </div>
 
-        {/* Grace Time Late */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-           4.Grace Time for Late
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2">4. Grace Time allowed for Late coming per Day (in minutes)</label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="graceTimeLate"
-              value={formData.graceTimeLate}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-3"
-              placeholder="Enter minutes"
-            />
-            <span>mins</span>
+            <input type="number" name="graceTimeLate" value={formData.graceTimeLate} onChange={handleChange} className="w-full border rounded px-4 py-3" placeholder="Enter minutes" />
+            {/* <span>mins</span> */}
           </div>
         </div>
 
-        {/* Absent when Late more than X Days */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-           5.Absent when late for more than
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2"> 5. Consider leave when late for more than</label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="absentWhenLateForDays"
-              value={formData.absentWhenLateForDays}
-              onChange={handleChange}
-              className="w-1/2 border rounded px-4 py-3"
-              placeholder="Days"
-            />
-            <select
-              name="absentLateOption"
-              value={formData.absentLateOption}
-              onChange={handleChange}
-              className="w-1/2 border rounded px-4 py-3"
-            >
+            <input type="number" name="absentWhenLateForDays" value={formData.absentWhenLateForDays} onChange={handleChange} className="w-1/2 border rounded px-4 py-3" placeholder="Enter Days" />
+            <select name="absentLateOption" value={formData.absentLateOption} onChange={handleChange} className="w-1/2 border rounded px-4 py-3">
               {dropdownOptions}
             </select>
           </div>
         </div>
 
-        {/* Half Day Rule */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            6.Consider as Half Day if total working time is
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2">6. Consider as Half Day if total working time is (in minutes) </label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="calculateHalfDayMins"
-              value={formData.calculateHalfDayMins}
-              onChange={handleChange}
-              className="w-1/2 border rounded px-4 py-3"
-              placeholder="Minutes"
-            />
-            </div>
+            <input type="number" name="calculateHalfDayMins" value={formData.calculateHalfDayMins} onChange={handleChange} className="w-1/2 border rounded px-4 py-3" placeholder="Enter Minutes" />
+          </div>
         </div>
 
-        {/* Absent Rule */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            7.Calculate Absent worked in less than
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2">7.Consider leave if worked less than the required daily hours (in minutes) </label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="calculateAbsentMins"
-              value={formData.calculateAbsentMins}
-              onChange={handleChange}
-              className="w-1/2 border rounded px-4 py-3"
-              placeholder="Minutes"
-            />
-            <select
-              name="calculateAbsentOption"
-              value={formData.calculateAbsentOption}
-              onChange={handleChange}
-              className="w-1/2 border rounded px-4 py-3"
-            >
+            <input type="number" name="calculateAbsentMins" value={formData.calculateAbsentMins} onChange={handleChange} className="w-1/2 border rounded px-4 py-3" placeholder="Enter Minutes" />
+            <select name="calculateAbsentOption" value={formData.calculateAbsentOption} onChange={handleChange} className="w-1/2 border rounded px-4 py-3">
               {dropdownOptions}
             </select>
           </div>
         </div>
 
-        
-
-        {/* Total Permission Hours */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            8.Total Hours of Permission per Month
-          </label>
-          <input
-            type="number"
-            name="totalPermissionHoursPerMonth"
-            value={formData.totalPermissionHoursPerMonth}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">8. Total Hours of Permission per Month</label>
+          <input type="number" name="totalPermissionHoursPerMonth" value={formData.totalPermissionHoursPerMonth} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
-        {/* No. of Permission */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            9.No. of Permissions per Month
-          </label>
-          <input
-            type="number"
-            name="noOfPermissionsPerMonth"
-            value={formData.noOfPermissionsPerMonth}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">9. No. of Permissions per Month</label>
+          <input type="number" name="noOfPermissionsPerMonth" value={formData.noOfPermissionsPerMonth} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
-        {/* Break Hours */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            10.Total Break Hours Allowed per Day
-          </label>
-          <input
-            type="number"
-            name="breakHoursPerDay"
-            value={formData.breakHoursPerDay}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">10. Total Break Hours Allowed per Day</label>
+          <input type="number" name="breakHoursPerDay" value={formData.breakHoursPerDay} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
-        {/* Casual Leave */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            11.Casual Leave allowed per Month
-          </label>
-          <input
-            type="number"
-            name="casualOrPaidLeavePerMonth"
-            value={formData.casualOrPaidLeavePerMonth}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">11. Casual Leave allowed per Month</label>
+          <input type="number" name="casualOrPaidLeavePerMonth" value={formData.casualOrPaidLeavePerMonth} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
-        {/* Saturday Offs */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            12.Saturday Off allowed per Month
-          </label>
-          <input
-            type="number"
-            name="saturdayOffPerMonth"
-            value={formData.saturdayOffPerMonth}
-            onChange={handleChange}
-            className="w-full border rounded px-4 py-3"
-          />
+          <label className="block font-semibold text-gray-700 mb-2">12. Saturday Off allowed per Month</label>
+          <input type="number" name="saturdayOffPerMonth" value={formData.saturdayOffPerMonth} onChange={handleChange} className="w-full border rounded px-4 py-3" />
         </div>
 
-        {/* Daily Task Submission */}
         <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-           13.Daily task should be submitted after punch-in
-          </label>
+          <label className="block font-semibold text-gray-700 mb-2">13. Daily task should be submitted after punch-in (in minutes)</label>
           <div className="flex gap-3 items-center">
-            <input
-              type="number"
-              name="dailyTaskSubmitMins"
-              value={formData.dailyTaskSubmitMins}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-3"
-            />
-            <span>mins</span>
+            <input type="number" name="dailyTaskSubmitMins" value={formData.dailyTaskSubmitMins} onChange={handleChange} className="w-full border rounded px-4 py-3" placeholder="Enter Minutes" />
+            {/* <span>mins</span> */}
           </div>
         </div>
-
       </section>
 
-    
-
-      {/* Weekly Off and Holiday Absent Rule - Changed to 3 Checkboxes */}
       <section>
-        <label className="block font-semibold text-gray-700 mb-2">
-          14.Mark Weekly Off & Holidays as Absent if:
-        </label>
+        <label className="block font-semibold text-gray-700 mb-2">14. Mark Weekly Off & Holidays as Absent if:</label>
         <div className="flex flex-col gap-2">
           <label className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              name="weeklyOffPrefixAbsent"
-              checked={formData.weeklyOffPrefixAbsent}
-              onChange={handleChange}
-              className="h-5 w-5 text-blue-600 border-gray-300"
-            />
+            <input type="checkbox" name="weeklyOffPrefixAbsent" checked={formData.weeklyOffPrefixAbsent} onChange={handleChange} className="h-5 w-5 text-blue-600 border-gray-300" />
             <span>Prefix Day Absent</span>
           </label>
           <label className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              name="weeklyOffSuffixAbsent"
-              checked={formData.weeklyOffSuffixAbsent}
-              onChange={handleChange}
-              className="h-5 w-5 text-blue-600 border-gray-300"
-            />
+            <input type="checkbox" name="weeklyOffSuffixAbsent" checked={formData.weeklyOffSuffixAbsent} onChange={handleChange} className="h-5 w-5 text-blue-600 border-gray-300" />
             <span>Suffix Day Absent</span>
           </label>
           <label className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              name="weeklyOffBothAbsent"
-              checked={formData.weeklyOffBothAbsent}
-              onChange={handleChange}
-              className="h-5 w-5 text-blue-600 border-gray-300"
-            />
-            <span>Both Day Absent</span>
+            <input type="checkbox" name="weeklyOffBothAbsent" checked={formData.weeklyOffBothAbsent} onChange={handleChange} className="h-5 w-5 text-blue-600 border-gray-300" />
+            <span>Both Prefix & Suffix Absent</span>
           </label>
         </div>
       </section>
-  {/* Checkbox Fields */}
-      <section className="grid gap-4 md:grid-cols-2">
-        {checkboxFields.map(({ label, name }) => (
-          <label key={name} className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              name={name}
-              checked={formData[name]}
-              onChange={handleChange}
-              className="h-5 w-5 text-blue-600 border-gray-300"
-            />
-            <span>{label}</span>
-          </label>
-        ))}
+
+      {/* Other checkbox options if needed */}
+      <section className="grid gap-6 md:grid-cols-2">
+        <label className="flex items-center gap-3">
+          <input type="checkbox" name="considerFirstLastPunch" checked={formData.considerFirstLastPunch} onChange={handleChange} className="h-5 w-5 text-blue-600 border-gray-300" />
+          Consider 1st & Last Punch attendance Calculation
+        </label>
+
+        <label className="flex items-center gap-3">
+          <input type="checkbox" name="deductBreakFromWork" checked={formData.deductBreakFromWork} onChange={handleChange} className="h-5 w-5 text-blue-600 border-gray-300" />
+          Deduct Break Hours from Work Duration
+        </label>
       </section>
-      {/* Buttons */}
-      <section className="flex justify-end gap-4 pt-4 border-t">
-        <button
-          type="cancel"
-          onClick={() => setFormData({
-            morningPunchBefore: '',
-            eveningPunchAfter: '',
-            workingHoursPerDay: '',
-            graceTimeLate: '',
-            considerFirstLastPunch: false,
-            calculateHalfDayMins: '',
-            calculateHalfDayOption: '',
-            calculateAbsentMins: '',
-            calculateAbsentOption: '',
-            deductBreakFromWork: false,
-            absentWhenLateForDays: '',
-            absentLateOption: '',
-            weeklyOffPrefixAbsent: false,
-            weeklyOffSuffixAbsent: false,
-            weeklyOffBothAbsent: false,
-            totalPermissionHoursPerMonth: '',
-            noOfPermissionsPerMonth: '',
-            breakHoursPerDay: '',
-            casualOrPaidLeavePerMonth: '',
-            saturdayOffPerMonth: '',
-            dailyTaskSubmitMins: '',
-          })}
-          className="px-8 py-3 font-semibold rounded border border-gray-300 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-8 py-3 font-semibold rounded bg-blue-600 text-white hover:bg-blue-700"
-        >
-          Submit
-        </button>
-      </section>
+
+      <div className="text-center pt-8">
+  <button type="submit" className="button-primary">
+    Save Rules
+  </button>
+  <button
+    type="button"
+    onClick={() =>
+      setFormData({
+        morningPunchBefore: '',
+        eveningPunchAfter: '',
+        workingHoursPerDay: '',
+        graceTimeLate: '',
+        considerFirstLastPunch: false,
+        calculateHalfDayMins: '',
+        calculateHalfDayOption: '',
+        calculateAbsentMins: '',
+        calculateAbsentOption: '',
+        deductBreakFromWork: false,
+        absentWhenLateForDays: '',
+        absentLateOption: '',
+        weeklyOffPrefixAbsent: false,
+        weeklyOffSuffixAbsent: false,
+        weeklyOffBothAbsent: false,
+        totalPermissionHoursPerMonth: '',
+        noOfPermissionsPerMonth: '',
+        breakHoursPerDay: '',
+        casualOrPaidLeavePerMonth: '',
+        saturdayOffPerMonth: '',
+        dailyTaskSubmitMins: '',
+      })
+    }
+    className="ml-4 button-primary"
+  >
+    Reset
+  </button>
+</div>
+
     </form>
   );
 };
 
 export default RulesForm;
+
+
+
+

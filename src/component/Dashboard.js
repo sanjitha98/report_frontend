@@ -26,6 +26,7 @@ import { closeModel, setHasModalShownToday } from "../Redux/slice/commonSlice";
 import ProjectAssignForm from "./ProjectAssignForm";
 import ProjectAssignList from "./ProjectAssignList";
 import LateReport from "./LateReport";
+import PunchCorrectionForm from "./PunchCorrectionForm";
 
 const EmployeeReport = React.lazy(() =>
   import(/* webpackPrefetch: true */ "./EmployeeReport")
@@ -1022,6 +1023,39 @@ M16 14v6"
                     </span>
                   </Link>
                 </li> */}
+
+
+                <li>
+                  <Link
+                    to="/dashboard/PunchCorrectionForm"
+                    className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group ${
+                      location.pathname === "/dashboard/PunchCorrectionForm" &&
+                      "bg-gray-100"
+                    }`}
+                  >
+                    <svg
+                      className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-orange-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 11l1 1 3-3M9 15l1 1 3-3"
+                      />
+                    </svg>
+
+                    <span className="flex-1 text-left ml-3 ms-3 whitespace-nowrap">
+                      Punch Correction Form
+                    </span>
+                  </Link>
+                </li>
+
+
                 <li>
                   <Link
                     to="/dashboard/changePassword"
@@ -1440,6 +1474,7 @@ M16 14v6"
             <Route path="/project-assign" element={<ProjectAssignForm />} />
             <Route path="/rules_form" element={<RulesMaster />} />
             <Route path="/LateReport" element={<LateReport />} />
+            <Route path="/PunchCorrectionForm" element={<PunchCorrectionForm />} />
             <Route
               path="/project-assign-list"
               element={<ProjectAssignList />}

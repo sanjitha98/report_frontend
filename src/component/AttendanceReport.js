@@ -1519,6 +1519,8 @@ const AttendanceReport = () => {
       )}
     </div>
   );
+
+
 };
 
 export default AttendanceReport;

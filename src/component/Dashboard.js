@@ -1024,7 +1024,6 @@ M16 14v6"
                   </Link>
                 </li> */}
 
-
                 <li>
                   <Link
                     to="/dashboard/PunchCorrectionForm"
@@ -1038,14 +1037,13 @@ M16 14v6"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth="2"
+                      strokeWidth="1.5"
                       stroke="currentColor"
-                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 11l1 1 3-3M9 15l1 1 3-3"
+                        d="M12 6v6l3 3m6 0a9 9 0 11-9-9 9 9 0 019 9z"
                       />
                     </svg>
 
@@ -1054,7 +1052,6 @@ M16 14v6"
                     </span>
                   </Link>
                 </li>
-
 
                 <li>
                   <Link
@@ -1474,7 +1471,10 @@ M16 14v6"
             <Route path="/project-assign" element={<ProjectAssignForm />} />
             <Route path="/rules_form" element={<RulesMaster />} />
             <Route path="/LateReport" element={<LateReport />} />
-            <Route path="/PunchCorrectionForm" element={<PunchCorrectionForm />} />
+            <Route
+              path="/PunchCorrectionForm"
+              element={<PunchCorrectionForm />}
+            />
             <Route
               path="/project-assign-list"
               element={<ProjectAssignList />}
